@@ -12,7 +12,7 @@
     "install:desktop": "node scripts/install-desktop.js",
     "open:website": "node scripts/open-website.js",
     "build:linux": "node scripts/validate-release-config.js && electron-builder --linux AppImage deb",
-    "build:win": "node scripts/validate-release-config.js && electron-builder --win nsis portable",
+    "build:win": "node scripts/validate-release-config.js && node scripts/build-windows-installer.js",
     "dist": "node scripts/validate-release-config.js && electron-builder",
     "serve:website": "node scripts/serve-website.js",
     "configure:desktop": "node scripts/configure-desktop.js",

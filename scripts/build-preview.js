@@ -14,7 +14,7 @@ const lockFile = path.join(artifacts, '.preview-build.lock');
 const lock = fs.openSync(lockFile, 'wx');
 const manifestFile = path.join(root, 'dist/preview/releases.json');
 const releaseFiles = {
-  windows: 'CineStream-1.1.0-preview-win-x64-portable.exe',
+  windows: 'CineStream-1.1.0-preview-win-x64-setup.exe',
   linux: 'CineStream-1.1.0-preview-linux-x86_64.AppImage',
   deb: 'CineStream-1.1.0-preview-linux-amd64.deb',
 };
@@ -44,7 +44,7 @@ try {
   fs.writeFileSync(file, JSON.stringify({ apiBase: 'http://127.0.0.1:4000', developmentBuild: true }, null, 2) + '\n');
   const cli = require.resolve('electron-builder/out/cli/cli.js');
   const result = spawnSync(process.execPath, [cli,
-    '--' + platform, ...(platform === 'linux' ? ['AppImage', 'deb'] : ['portable']), '--x64', '--publish', 'never',
+    '--' + platform, ...(platform === 'linux' ? ['AppImage', 'deb'] : ['nsis']), '--x64', '--publish', 'never',
     '--config.directories.output=dist/preview',
     '--config.extraMetadata.version=1.1.0-preview',
     '--config.artifactName=CineStream-1.1.0-preview-${os}-${arch}.${ext}',

@@ -16,4 +16,10 @@ module.exports = defineConfig({
   },
   workers: 1,
   reporter: "list",
+  webServer: {
+    command: "php artisan serve --port=4000",
+    cwd: "./backend",
+    port: 4000,
+    reuseExistingServer: true,
+  },
 });
