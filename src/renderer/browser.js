@@ -21,6 +21,8 @@
   }
   const tabs = new Map();
   const history = [];
+  const closedTabs = [];
+  let contextTabId = null;
   let activeId = null;
   let nextId = 1;
   let accountMode = 'login';
@@ -79,12 +81,14 @@
     button.append(icon, title, close);
     button.onclick = () => activate(id);
     button.onkeydown = (event) => { if (event.key === 'Enter' || event.key === ' ') activate(id); };
+    button.onauxclick = (event) => { if (event.button === 1) { event.preventDefault(); closeTab(id); } };
+    button.oncontextmenu = (event) => { event.preventDefault(); showTabContextMenu(event.clientX, event.clientY, id); };
     close.onclick = (event) => { event.stopPropagation(); closeTab(id); };
     $('tab-strip').append(button);
     const view = document.createElement('webview');
     view.setAttribute('src', 'about:blank');
     view.setAttribute('partition', 'cinema-private');
-    const tab = { id, button, title, view, url: 'about:blank', ready: false, loading: false, error: null };
+    const tab = { id, button, title, view, url: 'about:blank', ready: false, loading: false, error: null, zoomFactor: 1.0 };
     tabs.set(id, tab);
     view.addEventListener('dom-ready', () => {
       tab.ready = true;
@@ -98,6 +102,12 @@
         if (title) tab.title.textContent = title;
       }
       if (activeId === id) updateToolbar();
+    });
+    view.addEventListener('found-in-page', (event) => {
+      if (event.result) {
+        const { activeMatchOrdinal, numberOfMatches } = event.result;
+        $('find-count').textContent = numberOfMatches ? `${activeMatchOrdinal} of ${numberOfMatches}` : '0 of 0';
+      }
     });
     const navigated = (event) => {
       if (!event.url) return;
@@ -129,6 +139,8 @@
   function closeTab(id) {
     const tab = tabs.get(id);
     if (!tab) return;
+    closedTabs.push({ url: tab.url === 'about:blank' ? '' : tab.url, title: tab.title.textContent });
+    if (closedTabs.length > 30) closedTabs.shift();
     const others = [...tabs.keys()].filter((value) => value !== id);
     tab.view.remove();
     tab.button.remove();
@@ -340,29 +352,250 @@
   api.onBlockEvent((counts) => { $('blocked-count').textContent = counts.adsBlocked + counts.popupsBlocked; });
   api.onNavigationError(toast); api.onDownloadComplete((path) => toast('Download complete: ' + path));
   api.onLocked(() => { account = null; renderAccount(); });
+  $('tab-strip').ondblclick = (event) => { if (event.target === $('tab-strip')) createTab(); };
+  $('url-input').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && event.altKey) {
+      event.preventDefault();
+      const val = $('url-input').value.trim();
+      if (val) createTab(val);
+    }
+  });
+
+  function showTabContextMenu(x, y, tabId) {
+    contextTabId = tabId;
+    const menu = $('tab-context-menu');
+    menu.hidden = false;
+    menu.style.left = `${Math.min(x, window.innerWidth - 210)}px`;
+    menu.style.top = `${y}px`;
+  }
+  $('tab-context-menu').querySelectorAll('button').forEach((btn) => {
+    btn.onclick = () => {
+      $('tab-context-menu').hidden = true;
+      if (!contextTabId) return;
+      const action = btn.dataset.action;
+      if (action === 'new-tab') createTab();
+      else if (action === 'reload-tab') { const t = tabs.get(contextTabId); if (t?.ready) t.view.reload(); }
+      else if (action === 'duplicate-tab') { const t = tabs.get(contextTabId); if (t) createTab(t.url === 'about:blank' ? '' : t.url); }
+      else if (action === 'close-tab') closeTab(contextTabId);
+      else if (action === 'close-other-tabs') {
+        for (const id of [...tabs.keys()]) { if (id !== contextTabId) closeTab(id); }
+        activate(contextTabId);
+      }
+    };
+  });
+  document.addEventListener('click', (e) => {
+    if (!$('tab-context-menu').hidden && !$('tab-context-menu').contains(e.target)) {
+      $('tab-context-menu').hidden = true;
+    }
+  });
+
+  function openFindBar() {
+    $('find-bar').hidden = false;
+    $('find-input').focus();
+    $('find-input').select();
+    const val = $('find-input').value.trim();
+    if (val && current()?.view) current().view.findInPage(val);
+  }
+  function closeFindBar() {
+    $('find-bar').hidden = true;
+    const tab = current();
+    if (tab?.view) tab.view.stopFindInPage('clearSelection');
+    $('find-count').textContent = '';
+  }
+  function findNext() {
+    const tab = current();
+    const val = $('find-input').value.trim();
+    if (tab?.view && val) tab.view.findInPage(val, { findNext: true, forward: true });
+  }
+  function findPrev() {
+    const tab = current();
+    const val = $('find-input').value.trim();
+    if (tab?.view && val) tab.view.findInPage(val, { findNext: true, forward: false });
+  }
+  $('find-input').oninput = () => {
+    const val = $('find-input').value.trim();
+    const tab = current();
+    if (tab?.view) {
+      if (val) tab.view.findInPage(val);
+      else { tab.view.stopFindInPage('clearSelection'); $('find-count').textContent = ''; }
+    }
+  };
+  $('find-input').onkeydown = (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); if (e.shiftKey) findPrev(); else findNext(); }
+    if (e.key === 'Escape') { e.preventDefault(); closeFindBar(); }
+  };
+  $('find-prev').onclick = findPrev;
+  $('find-next').onclick = findNext;
+  $('find-close').onclick = closeFindBar;
+
   function shortcut(key) {
-    if (key === 'new-tab') createTab();
-    if (key === 'close-tab') closeTab(activeId);
-    if (key === 'address') { $('url-input').focus(); $('url-input').select(); }
-    if (key === 'reload') $('btn-reload').click();
-    if (key === 'back') $('btn-back').click();
-    if (key === 'forward') $('btn-forward').click();
-    if (key === 'home') goHome();
-    if (key === 'fullscreen') api.toggleFullscreen();
+    if (key === 'new-tab') { createTab(); $('url-input').focus(); $('url-input').select(); }
+    else if (key === 'reopen-closed-tab') {
+      if (closedTabs.length) {
+        const item = closedTabs.pop();
+        createTab(item.url);
+        toast('Reopened tab: ' + (item.title || item.url));
+      } else {
+        toast('No recently closed tabs');
+      }
+    }
+    else if (key === 'close-tab') closeTab(activeId);
+    else if (key === 'next-tab') {
+      const ids = [...tabs.keys()];
+      if (ids.length > 1) {
+        const idx = ids.indexOf(activeId);
+        activate(ids[(idx + 1) % ids.length]);
+      }
+    }
+    else if (key === 'prev-tab') {
+      const ids = [...tabs.keys()];
+      if (ids.length > 1) {
+        const idx = ids.indexOf(activeId);
+        activate(ids[(idx - 1 + ids.length) % ids.length]);
+      }
+    }
+    else if (key.startsWith('switch-tab-')) {
+      const num = parseInt(key.replace('switch-tab-', ''), 10) - 1;
+      const ids = [...tabs.keys()];
+      if (ids[num]) activate(ids[num]);
+    }
+    else if (key === 'last-tab') {
+      const ids = [...tabs.keys()];
+      if (ids.length) activate(ids[ids.length - 1]);
+    }
+    else if (key === 'address') { $('url-input').focus(); $('url-input').select(); }
+    else if (key === 'reload') {
+      const tab = current();
+      if (tab?.loading && tab?.view) { tab.view.stop(); toast('Page loading stopped'); }
+      else $('btn-reload').click();
+    }
+    else if (key === 'hard-reload') {
+      const tab = current();
+      if (tab?.view && tab?.ready) {
+        tab.view.reloadIgnoringCache();
+        toast('Page refreshed (cache bypassed)');
+      } else {
+        $('btn-reload').click();
+      }
+    }
+    else if (key === 'back') $('btn-back').click();
+    else if (key === 'forward') $('btn-forward').click();
+    else if (key === 'home') goHome();
+    else if (key === 'toggle-bookmark') {
+      const url = currentUrl();
+      if (url) {
+        $('btn-bookmark').click();
+        const saved = bookmarks.some((item) => item.url === url);
+        toast(saved ? 'Added to bookmarks ★' : 'Removed from bookmarks ☆');
+      }
+    }
+    else if (key === 'bookmarks-panel') {
+      if ($('side-panel').hidden || $('panel-title').textContent !== 'Bookmarks') showPanel('bookmarks');
+      else $('side-panel').hidden = true;
+    }
+    else if (key === 'history-panel') {
+      if ($('side-panel').hidden || $('panel-title').textContent !== 'History this session') showPanel('history');
+      else $('side-panel').hidden = true;
+    }
+    else if (key === 'downloads-panel') {
+      if ($('side-panel').hidden || $('panel-title').textContent !== 'Settings & VPN') showPanel('settings');
+      else $('side-panel').hidden = true;
+    }
+    else if (key === 'clear-data') $('menu-clear').click();
+    else if (key === 'zoom-in' || key === 'zoom-out' || key === 'zoom-reset') {
+      const tab = current();
+      if (tab?.view) {
+        if (!tab.zoomFactor) tab.zoomFactor = 1.0;
+        if (key === 'zoom-in') tab.zoomFactor = Math.min(Number(((tab.zoomFactor || 1) + 0.1).toFixed(1)), 3.0);
+        else if (key === 'zoom-out') tab.zoomFactor = Math.max(Number(((tab.zoomFactor || 1) - 0.1).toFixed(1)), 0.25);
+        else if (key === 'zoom-reset') tab.zoomFactor = 1.0;
+        tab.view.setZoomFactor(tab.zoomFactor);
+        toast(`Zoom: ${Math.round(tab.zoomFactor * 100)}%`);
+      }
+    }
+    else if (key === 'find-in-page') openFindBar();
+    else if (key === 'find-next') findNext();
+    else if (key === 'find-prev') findPrev();
+    else if (key === 'fullscreen') api.toggleFullscreen();
+    else if (key === 'devtools') {
+      const tab = current();
+      if (tab?.view) {
+        try {
+          if (tab.view.isDevToolsOpened()) tab.view.closeDevTools();
+          else tab.view.openDevTools();
+        } catch {}
+      }
+    }
+    else if (key === 'print') {
+      const tab = current();
+      if (tab?.view) { try { tab.view.print(); } catch {} }
+    }
+    else if (key === 'view-source') {
+      const url = currentUrl();
+      if (url) createTab('view-source:' + url);
+    }
+    else if (key === 'escape') {
+      if (!$('find-bar').hidden) { closeFindBar(); return; }
+      if (!$('tab-context-menu').hidden) { $('tab-context-menu').hidden = true; return; }
+      if (!$('menu').hidden) { $('menu').hidden = true; return; }
+      if (!$('side-panel').hidden) { $('side-panel').hidden = true; return; }
+      if ($('account-dialog').open) { $('account-dialog').close(); return; }
+      const tab = current();
+      if (tab && tab.loading && tab.view) { tab.view.stop(); toast('Loading stopped'); }
+      if (document.activeElement === $('url-input')) {
+        $('url-input').value = currentUrl();
+        $('url-input').blur();
+      }
+    }
   }
   api.onShortcut(shortcut);
   document.addEventListener('keydown', (event) => {
-    let key = null;
-    if (event.ctrlKey && !event.shiftKey && event.key.toLowerCase() === 't') key = 'new-tab';
-    if (event.ctrlKey && !event.shiftKey && event.key.toLowerCase() === 'w') key = 'close-tab';
-    if (event.ctrlKey && event.key.toLowerCase() === 'l') key = 'address';
-    if ((event.ctrlKey && event.key.toLowerCase() === 'r') || event.key === 'F5') key = 'reload';
-    if (event.altKey && event.key === 'ArrowLeft') key = 'back';
-    if (event.altKey && event.key === 'ArrowRight') key = 'forward';
-    if (event.altKey && event.key === 'Home') key = 'home';
-    if (event.key === 'F11') key = 'fullscreen';
-    if (key) { event.preventDefault(); shortcut(key); }
-    if (event.key === 'Escape') { $('menu').hidden = true; $('side-panel').hidden = true; }
+    const ctrl = event.ctrlKey || event.metaKey;
+    const shift = event.shiftKey;
+    const alt = event.altKey;
+    const key = event.key.toLowerCase();
+    const code = event.code;
+
+    let target = null;
+    if (ctrl && !shift && key === 't') target = 'new-tab';
+    else if (ctrl && shift && key === 't') target = 'reopen-closed-tab';
+    else if (ctrl && !shift && (key === 'w' || key === 'f4')) target = 'close-tab';
+    else if ((ctrl && !shift && (key === 'tab' || code === 'PageDown')) || (alt && ctrl && key === 'arrowright')) target = 'next-tab';
+    else if ((ctrl && shift && (key === 'tab' || code === 'PageUp')) || (alt && ctrl && key === 'arrowleft')) target = 'prev-tab';
+    else if (ctrl && !shift && key >= '1' && key <= '8') target = 'switch-tab-' + key;
+    else if (ctrl && !shift && key === '9') target = 'last-tab';
+    else if (ctrl && !shift && key === 'n') target = 'new-tab';
+
+    else if ((ctrl && key === 'l') || (alt && key === 'd') || key === 'f6') target = 'address';
+    else if ((ctrl && shift && key === 'r') || (ctrl && key === 'f5')) target = 'hard-reload';
+    else if ((ctrl && !shift && key === 'r') || event.key === 'F5') target = 'reload';
+    else if (alt && event.key === 'ArrowLeft') target = 'back';
+    else if (alt && event.key === 'ArrowRight') target = 'forward';
+    else if (alt && event.key === 'Home') target = 'home';
+
+    else if (ctrl && !shift && key === 'd') target = 'toggle-bookmark';
+    else if (ctrl && (shift && key === 'd' || !shift && key === 'b' || shift && key === 'o')) target = 'bookmarks-panel';
+    else if (ctrl && !shift && (key === 'h' || key === 'y')) target = 'history-panel';
+    else if (ctrl && !shift && key === 'j') target = 'downloads-panel';
+    else if (ctrl && shift && (key === 'delete' || code === 'Delete')) target = 'clear-data';
+
+    else if (ctrl && (key === '=' || key === '+' || code === 'NumpadAdd' || code === 'Equal')) target = 'zoom-in';
+    else if (ctrl && (key === '-' || code === 'NumpadSubtract' || code === 'Minus')) target = 'zoom-out';
+    else if (ctrl && (key === '0' || code === 'Numpad0' || code === 'Digit0')) target = 'zoom-reset';
+
+    else if (ctrl && !shift && key === 'f') target = 'find-in-page';
+    else if (event.key === 'F3') target = shift ? 'find-prev' : 'find-next';
+    else if (event.key === 'Escape') target = 'escape';
+
+    else if (event.key === 'F11') target = 'fullscreen';
+    else if (event.key === 'F12' || (ctrl && shift && (key === 'i' || key === 'j'))) target = 'devtools';
+    else if (ctrl && !shift && key === 'p') target = 'print';
+    else if (ctrl && !shift && key === 'u') target = 'view-source';
+
+    if (target) {
+      event.preventDefault();
+      shortcut(target);
+    }
   });
   function updateSearchLabels() {
     const names = { duckduckgo: 'DuckDuckGo', brave: 'Brave Search' };

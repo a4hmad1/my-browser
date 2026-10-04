@@ -3,6 +3,23 @@ const SEARCH_ENGINES = {
   brave: "https://search.brave.com/search?q=",
 };
 
+const KEYWORD_SEARCHES = {
+  g: "https://www.google.com/search?q=",
+  google: "https://www.google.com/search?q=",
+  d: "https://duckduckgo.com/?q=",
+  ddg: "https://duckduckgo.com/?q=",
+  b: "https://search.brave.com/search?q=",
+  brave: "https://search.brave.com/search?q=",
+  yt: "https://www.youtube.com/results?search_query=",
+  youtube: "https://www.youtube.com/results?search_query=",
+  w: "https://en.wikipedia.org/w/index.php?search=",
+  wiki: "https://en.wikipedia.org/w/index.php?search=",
+  wikipedia: "https://en.wikipedia.org/w/index.php?search=",
+  imdb: "https://www.imdb.com/find/?q=",
+  beenar: "https://beenar.net/?s=",
+  kurd: "https://kurdsubtitle.net/?s=",
+};
+
 function allowedPage(raw) {
   try {
     const url = new URL(raw);
@@ -26,7 +43,14 @@ function resolveInput(input, engine = "duckduckgo") {
     const url = (local ? "http://" : "https://") + value;
     if (allowedPage(url)) return new URL(url).href;
   }
+  const kwMatch = value.match(/^([a-z0-9_-]+)\s+(.+)$/i);
+  if (kwMatch) {
+    const kw = kwMatch[1].toLowerCase();
+    if (Object.hasOwn(KEYWORD_SEARCHES, kw)) {
+      return KEYWORD_SEARCHES[kw] + encodeURIComponent(kwMatch[2].trim());
+    }
+  }
   return SEARCH_ENGINES[Object.hasOwn(SEARCH_ENGINES, engine) ? engine : "duckduckgo"] + encodeURIComponent(value);
 }
 
-module.exports = { allowedPage, resolveInput };
+module.exports = { allowedPage, resolveInput, KEYWORD_SEARCHES };

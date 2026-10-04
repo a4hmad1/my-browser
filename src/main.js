@@ -541,6 +541,7 @@ function createWindow() {
     height: 860,
     minWidth: 760,
     minHeight: 540,
+    autoHideMenuBar: true,
     title: "CineStream Browser",
     backgroundColor: "#090a0f",
     webPreferences: {
@@ -574,14 +575,47 @@ function createWindow() {
     contents.on("before-input-event", (event, input) => {
       if (input.type !== "keyDown") return;
       const key = input.key.toLowerCase();
-      const shortcut = input.control && !input.shift && key === "t" ? "new-tab"
-        : input.control && !input.shift && key === "w" ? "close-tab"
-        : input.control && key === "l" ? "address"
-        : (input.control && key === "r") || key === "f5" ? "reload"
-        : input.alt && key === "left" ? "back"
-        : input.alt && key === "right" ? "forward"
-        : input.alt && key === "home" ? "home"
-        : key === "f11" ? "fullscreen" : null;
+      const ctrl = input.control || input.meta;
+      const shift = input.shift;
+      const alt = input.alt;
+      const code = input.code;
+
+      let shortcut = null;
+      if (ctrl && !shift && key === "t") shortcut = "new-tab";
+      else if (ctrl && shift && key === "t") shortcut = "reopen-closed-tab";
+      else if (ctrl && !shift && (key === "w" || key === "f4")) shortcut = "close-tab";
+      else if ((ctrl && !shift && (key === "tab" || code === "PageDown")) || (alt && ctrl && key === "arrowright")) shortcut = "next-tab";
+      else if ((ctrl && shift && (key === "tab" || code === "PageUp")) || (alt && ctrl && key === "arrowleft")) shortcut = "prev-tab";
+      else if (ctrl && !shift && key >= "1" && key <= "8") shortcut = "switch-tab-" + key;
+      else if (ctrl && !shift && key === "9") shortcut = "last-tab";
+      else if (ctrl && !shift && key === "n") shortcut = "new-tab";
+
+      else if ((ctrl && key === "l") || (alt && key === "d") || key === "f6") shortcut = "address";
+      else if ((ctrl && shift && key === "r") || (ctrl && key === "f5")) shortcut = "hard-reload";
+      else if ((ctrl && !shift && key === "r") || key === "f5") shortcut = "reload";
+      else if (alt && key === "arrowleft") shortcut = "back";
+      else if (alt && key === "arrowright") shortcut = "forward";
+      else if (alt && key === "home") shortcut = "home";
+
+      else if (ctrl && !shift && key === "d") shortcut = "toggle-bookmark";
+      else if (ctrl && (shift && key === "d" || !shift && key === "b" || shift && key === "o")) shortcut = "bookmarks-panel";
+      else if (ctrl && !shift && (key === "h" || key === "y")) shortcut = "history-panel";
+      else if (ctrl && !shift && key === "j") shortcut = "downloads-panel";
+      else if (ctrl && shift && (key === "delete" || code === "Delete")) shortcut = "clear-data";
+
+      else if (ctrl && (key === "=" || key === "+" || code === "NumpadAdd" || code === "Equal")) shortcut = "zoom-in";
+      else if (ctrl && (key === "-" || code === "NumpadSubtract" || code === "Minus")) shortcut = "zoom-out";
+      else if (ctrl && (key === "0" || code === "Numpad0" || code === "Digit0")) shortcut = "zoom-reset";
+
+      else if (ctrl && !shift && key === "f") shortcut = "find-in-page";
+      else if (key === "f3") shortcut = shift ? "find-prev" : "find-next";
+      else if (key === "escape") shortcut = "escape";
+
+      else if (key === "f11") shortcut = "fullscreen";
+      else if (key === "f12" || (ctrl && shift && (key === "i" || key === "j"))) shortcut = "devtools";
+      else if (ctrl && !shift && key === "p") shortcut = "print";
+      else if (ctrl && !shift && key === "u") shortcut = "view-source";
+
       if (shortcut) {
         event.preventDefault();
         send("browser-shortcut", shortcut);
@@ -622,7 +656,116 @@ function createWindow() {
   });
 }
 app.whenReady().then(() => {
-  Menu.setApplicationMenu(null);
+  const menuTemplate = [
+    {
+      label: "Edit",
+      submenu: [
+        { role: "undo" },
+        { role: "redo" },
+        { type: "separator" },
+        { role: "cut" },
+        { role: "copy" },
+        { role: "paste" },
+        { role: "pasteAndMatchStyle" },
+        { role: "delete" },
+        { role: "selectAll" },
+      ],
+    },
+    {
+      label: "View",
+      submenu: [
+        {
+          label: "Reload",
+          accelerator: "CmdOrCtrl+R",
+          click: () => send("browser-shortcut", "reload"),
+        },
+        {
+          label: "Force Reload",
+          accelerator: "CmdOrCtrl+Shift+R",
+          click: () => send("browser-shortcut", "hard-reload"),
+        },
+        {
+          label: "Actual Size",
+          accelerator: "CmdOrCtrl+0",
+          click: () => send("browser-shortcut", "zoom-reset"),
+        },
+        {
+          label: "Zoom In",
+          accelerator: "CmdOrCtrl+Plus",
+          click: () => send("browser-shortcut", "zoom-in"),
+        },
+        {
+          label: "Zoom Out",
+          accelerator: "CmdOrCtrl+-",
+          click: () => send("browser-shortcut", "zoom-out"),
+        },
+        { type: "separator" },
+        {
+          label: "Toggle Fullscreen",
+          accelerator: "F11",
+          click: () => send("browser-shortcut", "fullscreen"),
+        },
+      ],
+    },
+    {
+      label: "History",
+      submenu: [
+        {
+          label: "Back",
+          accelerator: "Alt+Left",
+          click: () => send("browser-shortcut", "back"),
+        },
+        {
+          label: "Forward",
+          accelerator: "Alt+Right",
+          click: () => send("browser-shortcut", "forward"),
+        },
+        {
+          label: "Show Full History",
+          accelerator: "CmdOrCtrl+H",
+          click: () => send("browser-shortcut", "history-panel"),
+        },
+        {
+          label: "Reopen Closed Tab",
+          accelerator: "CmdOrCtrl+Shift+T",
+          click: () => send("browser-shortcut", "reopen-closed-tab"),
+        },
+      ],
+    },
+    {
+      label: "Bookmarks",
+      submenu: [
+        {
+          label: "Bookmark This Tab",
+          accelerator: "CmdOrCtrl+D",
+          click: () => send("browser-shortcut", "toggle-bookmark"),
+        },
+        {
+          label: "Show Bookmarks",
+          accelerator: "CmdOrCtrl+B",
+          click: () => send("browser-shortcut", "bookmarks-panel"),
+        },
+      ],
+    },
+    {
+      label: "Window",
+      submenu: [
+        {
+          label: "New Tab",
+          accelerator: "CmdOrCtrl+T",
+          click: () => send("browser-shortcut", "new-tab"),
+        },
+        {
+          label: "Close Tab",
+          accelerator: "CmdOrCtrl+W",
+          click: () => send("browser-shortcut", "close-tab"),
+        },
+        { role: "minimize" },
+        { role: "close" },
+      ],
+    },
+  ];
+  Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate));
   loadToken();
   configureSession();
   createWindow();

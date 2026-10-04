@@ -79,12 +79,26 @@
       <div id="webviews" class="webviews"></div>
       <section id="error-page" class="error-page" hidden><div class="error-symbol">!</div><h2>Page could not load</h2><p id="error-text"></p><button id="error-retry" class="primary-button">Try again</button></section>
     </main>
+    <div id="find-bar" class="find-bar" hidden>
+      <input id="find-input" type="text" placeholder="Find in page (Ctrl+F)" autocomplete="off">
+      <span id="find-count" class="find-count"></span>
+      <button id="find-prev" class="find-btn" title="Previous (Shift+Enter)">▲</button>
+      <button id="find-next" class="find-btn" title="Next (Enter)">▼</button>
+      <button id="find-close" class="find-btn close" title="Close (Escape)">×</button>
+    </div>
+    <div id="tab-context-menu" class="context-menu" hidden>
+      <button data-action="new-tab">New tab <span class="shortcut-hint">Ctrl+T</span></button>
+      <button data-action="reload-tab">Reload <span class="shortcut-hint">Ctrl+R</span></button>
+      <button data-action="duplicate-tab">Duplicate tab</button>
+      <button data-action="close-tab">Close tab <span class="shortcut-hint">Ctrl+W</span></button>
+      <button data-action="close-other-tabs">Close other tabs</button>
+    </div>
     <div id="menu" class="menu" hidden>
-      <button data-panel="bookmarks">☆ <span>Bookmarks</span></button>
-      <button data-panel="history">◷ <span>History this session</span></button>
-      <button data-panel="settings">⚙ <span>Settings &amp; VPN</span></button>
-      <button id="menu-clear">⌫ <span>Clear website data</span></button>
-      <button id="menu-fullscreen">⛶ <span>Fullscreen</span></button>
+      <button data-panel="bookmarks">☆ <span>Bookmarks</span> <span class="shortcut-hint">Ctrl+B</span></button>
+      <button data-panel="history">◷ <span>History this session</span> <span class="shortcut-hint">Ctrl+H</span></button>
+      <button data-panel="settings">⚙ <span>Settings &amp; VPN</span> <span class="shortcut-hint">Ctrl+J</span></button>
+      <button id="menu-clear">⌫ <span>Clear website data</span> <span class="shortcut-hint">Ctrl+Shift+Del</span></button>
+      <button id="menu-fullscreen">⛶ <span>Fullscreen</span> <span class="shortcut-hint">F11</span></button>
     </div>
     <div id="side-panel" class="side-panel" hidden><div class="panel-head"><h2 id="panel-title"></h2><button id="panel-close" class="icon-button" aria-label="Close panel">×</button></div><div id="panel-body"></div></div>
     <dialog id="account-dialog"><div class="dialog-head"><div><span class="eyebrow">OPTIONAL ACCOUNT</span><h2>Your CineStream account</h2></div><button id="account-close" class="icon-button" aria-label="Close account">×</button></div><p id="account-description" class="muted">Browse without signing in. To move bookmarks to another computer, save a backup in Settings &amp; VPN.</p><div id="account-summary" hidden><div class="identity"><span id="account-avatar" class="avatar">A</span><div><strong id="account-name"></strong><small id="account-email"></small></div></div><p id="account-status" class="muted"></p><div class="dialog-actions"><button id="account-dashboard" class="secondary-button">Open account dashboard</button><button id="account-logout" class="secondary-button">Sign out</button></div></div><form id="account-form"><div class="form-tabs"><button id="mode-login" type="button" class="selected">Sign in</button><button id="mode-register" type="button">Create account</button></div><label id="name-label" hidden>Your name<input name="name" autocomplete="name"></label><label>Email<input name="email" type="email" autocomplete="email" required></label><label id="telegram-label" hidden>Telegram username<input name="telegram_username" placeholder="@username"></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label><label id="confirm-label" hidden>Confirm password<input name="password_confirmation" type="password" autocomplete="new-password"></label><button id="account-submit" type="submit" class="primary-button">Sign in</button></form><p id="account-error" class="error-message" role="alert"></p></dialog>
