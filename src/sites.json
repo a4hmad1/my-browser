@@ -1,0 +1,120 @@
+{
+  "sites": [
+    {
+      "name": "Beenar",
+      "url": "https://beenar.net",
+      "language": "Kurdish",
+      "tag": "Kurdish \u00b7 Films & series",
+      "description": "Kurdish movie provider. Availability of titles and playback depends on the provider.",
+      "color": "#b5e46b",
+      "checked_on": "2026-10-03",
+      "icon": "beenar.svg"
+    },
+    {
+      "name": "KurdSubtitle",
+      "url": "https://kurdsubtitle.net",
+      "language": "Kurdish",
+      "tag": "Kurdish \u00b7 Subtitled cinema",
+      "description": "Kurdish subtitles, films and series. Check each title with the provider.",
+      "color": "#b5e46b",
+      "checked_on": "2026-10-03",
+      "icon": "kurdsubtitle.svg"
+    },
+    {
+      "name": "Kurdbin",
+      "url": "https://kurdbin.kurdsat.tv",
+      "language": "Kurdish",
+      "tag": "Kurdish \u00b7 Kurdsat",
+      "description": "Kurdish films, drama and animation. Provider availability varies.",
+      "color": "#b5e46b",
+      "checked_on": "2026-10-03",
+      "icon": "kurdbin.svg"
+    },
+    {
+      "name": "KurdViewer",
+      "url": "https://kurdviewer.com",
+      "language": "Kurdish",
+      "tag": "Kurdish \u00b7 Subtitles & dubbing",
+      "description": "Kurdish movie directory. Check each title\u2019s availability with the provider.",
+      "color": "#b5e46b",
+      "checked_on": "2026-10-03",
+      "icon": "kurdviewer.svg"
+    },
+    {
+      "name": "ARTE",
+      "url": "https://www.arte.tv/en/videos/cinema/",
+      "language": "English",
+      "tag": "English subtitles \u00b7 Free cinema",
+      "description": "Free European films and shorts; regional restrictions may apply.",
+      "color": "#edab64",
+      "checked_on": "2026-10-03",
+      "icon": "arte.svg"
+    },
+    {
+      "name": "National Film Board",
+      "url": "https://www.nfb.ca",
+      "language": "English",
+      "tag": "English \u00b7 Free documentaries",
+      "description": "Free documentaries and animation from the National Film Board of Canada.",
+      "color": "#8fc3cf",
+      "checked_on": "2026-10-03",
+      "icon": "nfb.svg"
+    },
+    {
+      "name": "Tubi",
+      "url": "https://tubitv.com",
+      "language": "English",
+      "tag": "English \u00b7 Free movie catalog",
+      "description": "Free, ad-supported films and series; regional and playback restrictions may apply.",
+      "color": "#edab64",
+      "navigationHosts": [
+        "tubi.tv"
+      ],
+      "checked_on": "2026-10-03",
+      "icon": "tubi.svg"
+    },
+    {
+      "name": "Pluto TV",
+      "url": "https://pluto.tv",
+      "language": "English",
+      "tag": "English \u00b7 Free TV & movies",
+      "description": "Free, ad-supported live channels and on-demand movies. Regional restrictions and video ads may apply.",
+      "color": "#8fc3cf",
+      "checked_on": "2026-10-03",
+      "icon": "pluto.svg"
+    },
+    {
+      "name": "Plex Free Movies",
+      "url": "https://watch.plex.tv/",
+      "language": "English",
+      "tag": "English \u00b7 Free movies & TV",
+      "description": "Free ad-supported movie catalog. Some listings link to external paid services; use the Watch Free selection. Regional restrictions and embedded ads may apply.",
+      "color": "#edab64",
+      "navigationHosts": [
+        "app.plex.tv"
+      ],
+      "checked_on": "2026-10-03",
+      "icon": "plex.svg"
+    },
+    {
+      "name": "Internet Archive Films",
+      "url": "https://archive.org/details/feature_films",
+      "language": "English",
+      "tag": "English \u00b7 Archive films",
+      "description": "Free feature-film collection. Rights and availability depend on each upload.",
+      "color": "#8fc3cf",
+      "checked_on": "2026-10-03",
+      "icon": "archive.svg"
+    },
+    {
+      "name": "Filmzie",
+      "url": "https://filmzie.com/home",
+      "language": "English",
+      "tag": "English \u00b7 Free independent films",
+      "description": "Free ad-supported films. Regional restrictions and in-video ads may apply.",
+      "color": "#edab64",
+      "checked_on": "2026-10-03",
+      "icon": "filmzie.svg"
+    }
+  ]
+}

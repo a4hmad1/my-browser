@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; connect-src 'none'; frame-src https: http:; base-uri 'none'; form-action 'none'">
+  <title>CineStream Browser</title>
+  <link rel="stylesheet" href="browser.css">
+</head>
+<body>
+  <div class="window">
+    <header class="chrome">
+      <div class="tab-row">
+        <div class="brand" title="CineStream Browser"><span class="brand-mark">C</span></div>
+        <div id="tab-strip" class="tab-strip" role="tablist" aria-label="Browser tabs"></div>
+        <button id="new-tab" class="icon-button new-tab" title="New tab (Ctrl+T)" aria-label="New tab">+</button>
+        <div class="window-actions">
+          <button id="btn-minimize" class="window-button" aria-label="Minimize">−</button>
+          <button id="btn-maximize" class="window-button" aria-label="Maximize">□</button>
+          <button id="btn-close" class="window-button close" aria-label="Close">×</button>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button id="btn-back" class="icon-button" title="Back (Alt+Left)" aria-label="Back" disabled>‹</button>
+        <button id="btn-forward" class="icon-button" title="Forward (Alt+Right)" aria-label="Forward" disabled>›</button>
+        <button id="btn-reload" class="icon-button" title="Reload (Ctrl+R)" aria-label="Reload">↻</button>
+        <button id="btn-home" class="icon-button" title="New tab page (Alt+Home)" aria-label="Home">⌂</button>
+        <form id="address-form" class="address-form">
+          <span id="security-icon" class="security-icon" title="New tab">⌕</span>
+          <input id="url-input" type="text" autocomplete="off" spellcheck="false" aria-label="Search or enter address" placeholder="Search or enter a website address">
+          <button id="btn-bookmark" class="address-action" type="button" title="Bookmark this page" aria-label="Bookmark page">☆</button>
+          <button id="btn-go" class="address-action go" type="submit" title="Go">→</button>
+        </form>
+        <button id="btn-shield" class="pill" title="Ads and popups blocked"><span class="shield-icon">⬟</span><span id="blocked-count">0</span></button>
+        <button id="btn-account" class="avatar" title="Account" aria-label="Account">A</button>
+        <button id="btn-menu" class="icon-button" title="Browser menu" aria-label="Browser menu">⋮</button>
+      </div>
+    </header>
+    <main class="content">
+      <section id="start-page" class="start-page">
+        <div class="start-inner">
+          <section id="welcome-panel" class="welcome-panel" aria-label="Welcome to CineStream Browser">
+            <div class="welcome-top"><span class="welcome-badge">WELCOME TO CINESTREAM</span><button id="welcome-dismiss" class="welcome-close" type="button" aria-label="Dismiss welcome">×</button></div>
+            <h2>Make the web yours.</h2>
+            <p>Search from the address bar, keep the pages you love, and stay in control of your browsing data.</p>
+            <div class="welcome-features"><div><span>⌕</span><strong>Search and explore</strong><small>DuckDuckGo is ready in the address bar.</small></div><div><span>☆</span><strong>Save your places</strong><small>Bookmark sites and back them up to a file.</small></div><div><span>⬟</span><strong>Browse with control</strong><small>Manage popups, history, and connections.</small></div></div>
+            <div class="welcome-actions"><button id="welcome-start" type="button" class="primary-button">Start browsing</button><button id="welcome-settings" type="button" class="secondary-button">Explore settings</button></div>
+          </section>
+          <div id="dashboard-intro" class="dashboard-intro" hidden><span class="hero-symbol">C</span><div><span class="dashboard-kicker">CINESTREAM BROWSER</span><h1>Your web, your way.</h1><p>Search for anything or pick up where you left off.</p></div></div>
+          <form id="home-search" class="home-search"><span>⌕</span><input id="home-input" type="text" placeholder="Search or type a URL" aria-label="Search the web"><button type="submit">Search →</button></form>
+          <div class="section-title"><h2>Quick access</h2><button id="manage-bookmarks" type="button">Bookmarks</button></div>
+          <div id="quick-links" class="quick-links"></div>
+          <div class="privacy-note"><span>⬟</span><div><strong>Private by default</strong><small>Tabs and site data stay in memory. Bookmarks are saved on this device.</small></div></div>
+        </div>
+      </section>
+      <div id="webviews" class="webviews"></div>
+      <section id="error-page" class="error-page" hidden><div class="error-symbol">!</div><h2>Page could not load</h2><p id="error-text"></p><button id="error-retry" class="primary-button">Try again</button></section>
+    </main>
+    <div id="menu" class="menu" hidden>
+      <button data-panel="bookmarks">☆ <span>Bookmarks</span></button>
+      <button data-panel="history">◷ <span>History this session</span></button>
+      <button data-panel="settings">⚙ <span>Settings &amp; VPN</span></button>
+      <button id="menu-clear">⌫ <span>Clear website data</span></button>
+      <button id="menu-fullscreen">⛶ <span>Fullscreen</span></button>
+    </div>
+    <div id="side-panel" class="side-panel" hidden><div class="panel-head"><h2 id="panel-title"></h2><button id="panel-close" class="icon-button" aria-label="Close panel">×</button></div><div id="panel-body"></div></div>
+    <dialog id="account-dialog"><div class="dialog-head"><div><span class="eyebrow">OPTIONAL ACCOUNT</span><h2>Your CineStream account</h2></div><button id="account-close" class="icon-button" aria-label="Close account">×</button></div><p id="account-description" class="muted">Browse without signing in. To move bookmarks to another computer, save a backup in Settings &amp; VPN.</p><div id="account-summary" hidden><div class="identity"><span id="account-avatar" class="avatar">A</span><div><strong id="account-name"></strong><small id="account-email"></small></div></div><p id="account-status" class="muted"></p><div class="dialog-actions"><button id="account-dashboard" class="secondary-button">Open account dashboard</button><button id="account-logout" class="secondary-button">Sign out</button></div></div><form id="account-form"><div class="form-tabs"><button id="mode-login" type="button" class="selected">Sign in</button><button id="mode-register" type="button">Create account</button></div><label id="name-label" hidden>Your name<input name="name" autocomplete="name"></label><label>Email<input name="email" type="email" autocomplete="email" required></label><label id="telegram-label" hidden>Telegram username<input name="telegram_username" placeholder="@username"></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label><label id="confirm-label" hidden>Confirm password<input name="password_confirmation" type="password" autocomplete="new-password"></label><button id="account-submit" type="submit" class="primary-button">Sign in</button></form><p id="account-error" class="error-message" role="alert"></p></dialog>
+    <div id="toast" class="toast" role="status"></div>
+  </div>
+  <script src="browser.js"></script>
+</body>
+</html>

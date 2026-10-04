@@ -1,0 +1,47 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "npm ci",
+  "buildCommand": "npm run build",
+  "outputDirectory": "public",
+  "functions": {
+    "api/index.php": {
+      "runtime": "vercel-php@0.9.0",
+      "maxDuration": 30,
+      "excludeFiles": "{tests/**,node_modules/**,.env,.env.*,database/*.sqlite,storage/**}"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/((?!build/|images/|favicon.png|favicon.ico|robots.txt).*)",
+      "destination": "/api/index.php"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/build/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
+  "env": {
+    "APP_ENV": "production",
+    "APP_DEBUG": "false",
+    "LOG_CHANNEL": "stderr",
+    "SESSION_DRIVER": "database",
+    "SESSION_ENCRYPT": "true",
+    "SESSION_SECURE_COOKIE": "true",
+    "CACHE_STORE": "database",
+    "VIEW_COMPILED_PATH": "/tmp/cinestream/framework/views",
+    "APP_CONFIG_CACHE": "/tmp/cinestream-config.php",
+    "APP_EVENTS_CACHE": "/tmp/cinestream-events.php",
+    "APP_PACKAGES_CACHE": "/tmp/cinestream-packages.php",
+    "APP_ROUTES_CACHE": "/tmp/cinestream-routes.php",
+    "APP_SERVICES_CACHE": "/tmp/cinestream-services.php",
+    "INERTIA_DEVTOOLS_ENABLED": "false"
+  }
+}

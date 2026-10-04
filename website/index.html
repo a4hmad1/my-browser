@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineStream Browser — Pure Black & Light White Ad-Shielded Cinema</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Vazirmatn:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="../build/icon.png">
+</head>
+<body>
+
+  <!-- Minimalist Black & White Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#" class="header-brand">
+        <div class="brand-badge">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+        </div>
+        <span class="brand-text">CineStream</span>
+        <span class="version-tag">v1.0.0</span>
+      </a>
+
+      <nav class="header-nav">
+        <a href="#overview">Overview</a>
+        <a href="#preview">Preview</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#sources">Directory</a>
+        <a href="#download" class="btn-nav-download">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section" id="overview">
+    <div class="hero-wrap">
+      <div class="hero-chip">
+        <span class="chip-dot"></span>
+        <span>PRODUCTION RELEASE &bull; BLACK & LIGHT WHITE EDITION</span>
+      </div>
+
+      <h1 class="hero-headline">
+        Ultra-fast cinema browser.<br>
+        <span class="text-white-pure">Zero ads. Zero popups.</span>
+      </h1>
+
+      <p class="hero-kurdish-summary">
+        پلاتفۆرمی فەرمی و پێشکەوتووی براوسەری سینەستریم بۆ پەخشی خێرای فیلم و دراماکانی کوردی و هۆڵیوود بەبێ ڕیکلام و سپام
+      </p>
+
+      <p class="hero-lead">
+        Engineered from the ground up for high-bitrate streaming. Blocks intrusive ad redirects, stops sound instantly on home return, eliminates cache bloat, and connects to verified Kurdish and Hollywood cinema portals.
+      </p>
+
+      <!-- Primary Action Buttons -->
+      <div class="hero-cta-group">
+        <a href="#download" class="btn-cta primary" id="hero-quick-dl">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span id="hero-os-label">Download CineStream for Linux (.AppImage)</span>
+        </a>
+        <a href="#how-it-works" class="btn-cta secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Watch How It Works
+        </a>
+      </div>
+
+      <!-- Quick Trust Indicators -->
+      <div class="hero-security-strip">
+        <div class="security-item">
+          <span class="check-icon">&#10003;</span>
+          <span>Zero Reklam & Pop-ups</span>
+        </div>
+        <div class="security-divider"></div>
+        <div class="security-item">
+          <span class="check-icon">&#10003;</span>
+          <span>Instant Sound Cutoff on Home</span>
+        </div>
+        <div class="security-divider"></div>
+        <div class="security-item">
+          <span class="check-icon">&#10003;</span>
+          <span>Live Google Favicon API</span>
+        </div>
+        <div class="security-divider"></div>
+        <div class="security-item">
+          <span class="check-icon">&#10003;</span>
+          <span>Windows & Linux Ready</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Image Example Showcase -->
+  <section class="section" id="preview">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="sub-label">INTERFACE PREVIEW</span>
+        <h2 class="section-heading">Built for pure movie focus</h2>
+        <p class="section-desc">Experience cinema without distracting banners, redirects, or bloated browser toolbars.</p>
+      </div>
+
+      <div class="browser-mockup-frame">
+        <!-- Window Titlebar -->
+        <div class="mockup-header">
+          <div class="window-controls">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+          <div class="mockup-omnibar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <span>cinestream://hub — Kurdish Cinema & Hollywood 4K (Shield Active)</span>
+          </div>
+          <div class="mockup-actions">
+            <span class="badge-shield">&#x25cf; AdShield Active</span>
+          </div>
+        </div>
+
+        <!-- Real Screenshot Preview Image -->
+        <div class="mockup-body">
+          <img src="browser-preview.png" alt="CineStream Movie Browser Interface Example" class="browser-real-screenshot" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SUMMARY VIDEO & INTERACTIVE "HOW IT WORKS" WALKTHROUGH
+       ========================================================================= -->
+  <section class="section alt-section" id="how-it-works">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="sub-label">SUMMARY VIDEO & WALKTHROUGH</span>
+        <h2 class="section-heading">How CineStream works in real life</h2>
+        <p class="section-desc">Watch the interactive walkthrough demonstrating ad blocking, Kurdish & Hollywood streams, and instant sound cutoff.</p>
+      </div>
+
+      <!-- Simulated Video Player with Live Demo Controls -->
+      <div class="video-tour-container">
+        <div class="video-player-box">
+          <!-- Video Screen Simulation -->
+          <div class="video-screen" id="demo-video-screen">
+            <!-- Dynamic Video Slide 1: Launch & Hub -->
+            <div class="video-slide active" data-slide="1">
+              <div class="slide-badge">SCENE 1: INSTANT HUB & LIVE API LOGOS</div>
+              <div class="slide-content">
+                <div class="sim-browser-card">
+                  <div class="sim-urlbar">
+                    <span class="sim-dot"></span>
+                    <span class="sim-text">Search any Kurdish or Hollywood movie...</span>
+                  </div>
+                  <div class="sim-grid">
+                    <div class="sim-site-pill highlight"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://beenar.net&size=128" alt="Beenar"> Beenar (کوردی)</div>
+                    <div class="sim-site-pill"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://kurdsubtitle.net&size=128" alt="KurdSubtitle"> KurdSubtitle</div>
+                    <div class="sim-site-pill highlight"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://hdtodayz.org&size=128" alt="HDToday"> HDToday 4K</div>
+                    <div class="sim-site-pill"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://www.lookmovie2.to&size=128" alt="LookMovie"> LookMovie</div>
+                  </div>
+                </div>
+                <div class="slide-caption">
+                  <h3>One-Click Catalog Hub</h3>
+                  <p>All Kurdish and English cinema platforms unified with high-resolution real logos from Google Favicon API.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dynamic Video Slide 2: Ad Neutralization -->
+            <div class="video-slide" data-slide="2">
+              <div class="slide-badge">SCENE 2: AD & POPUP INTERCEPTION</div>
+              <div class="slide-content">
+                <div class="sim-browser-card">
+                  <div class="sim-shield-panel">
+                    <div class="shield-meter">
+                      <span class="meter-number" id="sim-counter">28</span>
+                      <span class="meter-text">Ads & Popups Intercepted</span>
+                    </div>
+                    <div class="meter-tags">
+                      <span class="tag-blocked">&#10005; Popunder blocked</span>
+                      <span class="tag-blocked">&#10005; Bet365 click trap killed</span>
+                      <span class="tag-blocked">&#10005; Redirect denied</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="slide-caption">
+                  <h3>Native CinemaShield Blocker</h3>
+                  <p>Aggressive click-hijackers and popunder tabs are rejected at native kernel dispatch before they open.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dynamic Video Slide 3: Instant Sound Kill & Turbo Cache -->
+            <div class="video-slide" data-slide="3">
+              <div class="slide-badge">SCENE 3: ZERO DELAY AUDIO CUTOFF</div>
+              <div class="slide-content">
+                <div class="sim-browser-card">
+                  <div class="sim-audio-panel">
+                    <div class="audio-state-icon">
+                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+                    </div>
+                    <div class="audio-state-text">
+                      <h4>Home Navigation Detected</h4>
+                      <p>All video and sound streams unbind immediately. 0 background audio leakage.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="slide-caption">
+                  <h3>Instant Media Purge</h3>
+                  <p>When returning to catalog hub, CineStream terminates all video buffers and stops all background sound instantly.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Video Player Controls Overlay -->
+            <div class="video-controls-bar">
+              <button class="btn-vid-play" id="btn-toggle-play" title="Play / Pause Walkthrough">
+                <svg id="icon-play" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <svg id="icon-pause" style="display:none;" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+              </button>
+              <div class="vid-time" id="vid-time-display">0:10 / 0:30</div>
+              <div class="vid-progress-track" id="vid-progress-track">
+                <div class="vid-progress-bar" id="vid-progress-bar" style="width: 33%;"></div>
+              </div>
+              <button class="btn-vid-step" id="btn-next-step" title="Next Scene">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step Navigation Tabs -->
+          <div class="video-steps-nav">
+            <button class="step-btn active" data-step="1">
+              <span class="step-num">01</span>
+              <div>
+                <strong>Unified Hub & Live Logos</strong>
+                <span>Kurdish & Hollywood 4K sources</span>
+              </div>
+            </button>
+            <button class="step-btn" data-step="2">
+              <span class="step-num">02</span>
+              <div>
+                <strong>Zero Ads & Popups</strong>
+                <span>Full CinemaShield filtering</span>
+              </div>
+            </button>
+            <button class="step-btn" data-step="3">
+              <span class="step-num">03</span>
+              <div>
+                <strong>Audio Kill & Turbo Cache</strong>
+                <span>Instant sound cutoff on home</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Supported Directory Platforms -->
+  <section class="section" id="sources">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="sub-label">VERIFIED DIRECTORY</span>
+        <h2 class="section-heading">Active Streaming Platforms</h2>
+        <p class="section-desc">Hand-tested Kurdish and Hollywood sources pre-configured for ad-free high FPS streaming.</p>
+      </div>
+
+      <div class="directory-layout">
+        <!-- Kurdish Column -->
+        <div class="dir-col">
+          <div class="dir-header">
+            <h4>Kurdish Cinema (سینەمای کوردی)</h4>
+            <span class="dir-badge">Dubbed & Subbed</span>
+          </div>
+          <ul class="dir-list">
+            <li>
+              <div class="dir-site-title">Beenar (بینەر)</div>
+              <span class="dir-site-url">beenar.net</span>
+            </li>
+            <li>
+              <div class="dir-site-title">KurdSubtitle (کورد سەبتایتڵ)</div>
+              <span class="dir-site-url">kurdsubtitle.net</span>
+            </li>
+            <li>
+              <div class="dir-site-title">KurdCinema (کورد سینەما)</div>
+              <span class="dir-site-url">kurdcinama.com</span>
+            </li>
+            <li>
+              <div class="dir-site-title">KurdFilm HD (کورد فیلم)</div>
+              <span class="dir-site-url">kurdfilm.krd</span>
+            </li>
+            <li>
+              <div class="dir-site-title">Kurdbin (کوردبین)</div>
+              <span class="dir-site-url">kurdbin.kurdsat.tv</span>
+            </li>
+            <li>
+              <div class="dir-site-title">KurdViewer (کورد ڤیوەر)</div>
+              <span class="dir-site-url">kurdviewer.com</span>
+            </li>
+            <li>
+              <div class="dir-site-title">Kurd Doblazh (کورد دۆبلاژ)</div>
+              <span class="dir-site-url">kurddoblazh.com</span>
+            </li>
+            <li>
+              <div class="dir-site-title">Kurdin (کوردین تەلەفزیۆن)</div>
+              <span class="dir-site-url">kurdin.net</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- English Column -->
+        <div class="dir-col">
+          <div class="dir-header">
+            <h4>Hollywood & English Cinema</h4>
+            <span class="dir-badge">1080p & 4K</span>
+          </div>
+          <ul class="dir-list">
+            <li>
+              <div class="dir-site-title">HDToday Cinema</div>
+              <span class="dir-site-url">hdtodayz.org</span>
+            </li>
+            <li>
+              <div class="dir-site-title">HDToday City (Mirror)</div>
+              <span class="dir-site-url">hdtoday.city</span>
+            </li>
+            <li>
+              <div class="dir-site-title">LookMovie HD</div>
+              <span class="dir-site-url">lookmovie2.to</span>
+            </li>
+            <li>
+              <div class="dir-site-title">7Movies Portal</div>
+              <span class="dir-site-url">7movies.ac</span>
+            </li>
+            <li>
+              <div class="dir-site-title">Flixer Aggregator</div>
+              <span class="dir-site-url">flixer.gd</span>
+            </li>
+            <li>
+              <div class="dir-site-title">Movy Streaming Hub</div>
+              <span class="dir-site-url">movy.sx</span>
+            </li>
+            <li>
+              <div class="dir-site-title">Soap2Day Global</div>
+              <span class="dir-site-url">soap2day.pe</span>
+            </li>
+            <li>
+              <div class="dir-site-title">SolarMovie Index</div>
+              <span class="dir-site-url">solarmovie.pe</span>
+            </li>
+            <li>
+              <div class="dir-site-title">Braflix Multi-Server</div>
+              <span class="dir-site-url">braflix.st</span>
+            </li>
+            <li>
+              <div class="dir-site-title">Cineby Theatrical</div>
+              <span class="dir-site-url">cineby.app</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       FORMAL DOWNLOAD CENTER (REAL DIRECT DOWNLOADS)
+       ========================================================================= -->
+  <section class="section alt-section" id="download">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="sub-label">DIRECT DOWNLOADS</span>
+        <h2 class="section-heading">Download CineStream for your OS</h2>
+        <p class="section-desc">Standalone, portable binaries with zero setup. Select your operating system below to start downloading.</p>
+      </div>
+
+      <!-- OS Switcher Tabs -->
+      <div class="os-selector-nav">
+        <button class="os-nav-item active" data-target="panel-linux">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C9.24 2 7 4.24 7 7c0 .64.12 1.25.34 1.82C5.96 10.15 5 12 5 14c0 1.66.67 3.16 1.76 4.24C7.84 19.33 9.34 20 11 20h2c1.66 0 3.16-.67 4.24-1.76C18.33 17.16 19 15.66 19 14c0-2-.96-3.85-2.34-5.18.22-.57.34-1.18.34-1.82 0-2.76-2.24-5-5-5z"/></svg>
+          <span>Linux</span>
+        </button>
+
+        <button class="os-nav-item" data-target="panel-windows">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
+          <span>Windows</span>
+        </button>
+      </div>
+
+      <!-- Release Cards -->
+      <div class="release-container">
+
+        <!-- Linux Panel -->
+        <div id="panel-linux" class="release-panel active">
+          <div class="release-card">
+            <div class="card-top">
+              <div class="os-brand">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C9.24 2 7 4.24 7 7c0 .64.12 1.25.34 1.82C5.96 10.15 5 12 5 14c0 1.66.67 3.16 1.76 4.24C7.84 19.33 9.34 20 11 20h2c1.66 0 3.16-.67 4.24-1.76C18.33 17.16 19 15.66 19 14c0-2-.96-3.85-2.34-5.18.22-.57.34-1.18.34-1.82 0-2.76-2.24-5-5-5z"/></svg>
+                <div>
+                  <h3>CineStream for Linux</h3>
+                  <span class="release-arch">x86_64 Architecture &bull; Universal AppImage</span>
+                </div>
+              </div>
+              <span class="badge-recommended">Recommended for Linux</span>
+            </div>
+
+            <div class="specs-grid">
+              <div class="spec-cell">
+                <span class="label">Package Type</span>
+                <span class="val">Standalone AppImage</span>
+              </div>
+              <div class="spec-cell">
+                <span class="label">File Size</span>
+                <span class="val">120 MB</span>
+              </div>
+              <div class="spec-cell">
+                <span class="label">Compatibility</span>
+                <span class="val">Ubuntu, Debian, Fedora, Arch</span>
+              </div>
+              <div class="spec-cell">
+                <span class="label">Release Status</span>
+                <span class="val">Verified v1.0.0</span>
+              </div>
+            </div>
+
+            <div class="download-actions">
+              <a href="/download/CineStream-1.0.0.AppImage" download="CineStream-1.0.0.AppImage" class="btn-download-primary" onclick="window.triggerFileDownload('/download/CineStream-1.0.0.AppImage', 'CineStream-1.0.0.AppImage')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Download AppImage (120 MB)</span>
+              </a>
+            </div>
+
+            <div class="terminal-quickstart">
+              <span class="term-label">Quick Run (Terminal):</span>
+              <code>chmod +x CineStream-1.0.0.AppImage && ./CineStream-1.0.0.AppImage</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Windows Panel -->
+        <div id="panel-windows" class="release-panel">
+          <div class="release-card">
+            <div class="card-top">
+              <div class="os-brand">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/></svg>
+                <div>
+                  <h3>CineStream for Windows</h3>
+                  <span class="release-arch">x64 Architecture &bull; Executable Binary</span>
+                </div>
+              </div>
+              <span class="badge-recommended">Recommended for Windows</span>
+            </div>
+
+            <div class="specs-grid">
+              <div class="spec-cell">
+                <span class="label">Package Type</span>
+                <span class="val">Win32 Executable (.exe)</span>
+              </div>
+              <div class="spec-cell">
+                <span class="label">File Size</span>
+                <span class="val">245 MB</span>
+              </div>
+              <div class="spec-cell">
+                <span class="label">Compatibility</span>
+                <span class="val">Windows 10, Windows 11 (64-bit)</span>
+              </div>
+              <div class="spec-cell">
+                <span class="label">Release Status</span>
+                <span class="val">Verified v1.0.0</span>
+              </div>
+            </div>
+
+            <div class="download-actions">
+              <a href="/download/CineStream-1.0.0.exe" download="CineStream-1.0.0.exe" class="btn-download-primary" onclick="window.triggerFileDownload('/download/CineStream-1.0.0.exe', 'CineStream-1.0.0.exe')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Download Executable (245 MB)</span>
+              </a>
+            </div>
+
+            <div class="terminal-quickstart">
+              <span class="term-label">Installation:</span>
+              <code>Double-click CineStream-1.0.0.exe to start watching immediately.</code>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Real-time Download Toast Feedback -->
+      <div id="download-progress-box" class="download-progress-box">
+        <div class="progress-inner">
+          <div class="spinner"></div>
+          <div>
+            <h4 id="progress-file-name">Download Initiated</h4>
+            <p>Your browser is downloading the binary. If it didn't start, check your browser's download manager.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Minimalist Black Footer -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-left">
+        <span class="brand-text">CineStream</span>
+        <p>&copy; 2026 CineStream Project. Open distribution, ad-shielded cinema browser.</p>
+      </div>
+      <div class="footer-right">
+        <a href="#overview">Overview</a>
+        <a href="#preview">Preview</a>
+        <a href="#how-it-works">Walkthrough</a>
+        <a href="#download">Download</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

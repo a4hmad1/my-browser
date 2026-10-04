@@ -1,0 +1,2 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#101719"><title>CineStream — Movie Browser</title><meta name="description" content="A dedicated movie browser for Windows and Linux. Kurdish and English cinema, popup protection, and a 24-hour free trial."><link rel="icon" href="/favicon.png">@vite(['resources/js/app.js']) @inertiaHead</head><body>@inertia</body></html>
