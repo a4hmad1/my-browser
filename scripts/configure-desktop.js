@@ -1,10 +1,14 @@
 const fs = require("fs");
-const value = process.env.CINEMA_API_URL;
-if (!value)
-  throw new Error(
-    "Set CINEMA_API_URL to the public HTTPS Laravel URL before building.",
+const raw = process.env.CINEMA_API_URL ? process.env.CINEMA_API_URL.trim() : "";
+if (!raw) {
+  fs.writeFileSync(
+    "src/config.json",
+    JSON.stringify({ apiBase: null }, null, 2) + "\n",
   );
-const url = new URL(value);
+  console.log("Configured standalone build without external account backend.");
+  process.exit(0);
+}
+const url = new URL(raw);
 if (
   url.protocol !== "https:" ||
   url.username ||

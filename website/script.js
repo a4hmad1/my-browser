@@ -17,6 +17,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const vidProgressBar = document.getElementById('vid-progress-bar');
   const vidTimeDisplay = document.getElementById('vid-time-display');
 
+  // Download Configuration (Cloudflare R2 or GitHub Releases)
+  const DOWNLOADS = window.CINESTREAM_DOWNLOADS || {
+    windows: 'https://github.com/a4hmad1/my-browser/releases/latest/download/CineStream-1.1.0-win-x64-setup.exe',
+    linux: 'https://github.com/a4hmad1/my-browser/releases/latest/download/CineStream-1.1.0-linux-x86_64.AppImage',
+    deb: 'https://github.com/a4hmad1/my-browser/releases/latest/download/CineStream-1.1.0-linux-amd64.deb'
+  };
+
+  // Sync panel links if defined
+  const btnDlLinux = document.getElementById('btn-dl-linux');
+  const btnDlWin = document.getElementById('btn-dl-windows');
+  if (btnDlLinux) btnDlLinux.href = DOWNLOADS.linux;
+  if (btnDlWin) btnDlWin.href = DOWNLOADS.windows;
+
   // Operating System Auto-Detection
   let detectedOS = 'linux';
   const ua = (navigator.userAgent || '').toLowerCase();
@@ -24,13 +37,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (ua.includes('win')) {
     detectedOS = 'windows';
     heroOsLabel.textContent = 'Download CineStream for Windows (.exe)';
-    heroQuickDl.setAttribute('href', '/download/CineStream-1.0.0.exe');
-    heroQuickDl.setAttribute('download', 'CineStream-1.0.0.exe');
+    heroQuickDl.setAttribute('href', DOWNLOADS.windows);
+    heroQuickDl.setAttribute('download', 'CineStream-1.1.0-win-x64-setup.exe');
   } else {
     detectedOS = 'linux';
     heroOsLabel.textContent = 'Download CineStream for Linux (.AppImage)';
-    heroQuickDl.setAttribute('href', '/download/CineStream-1.0.0.AppImage');
-    heroQuickDl.setAttribute('download', 'CineStream-1.0.0.AppImage');
+    heroQuickDl.setAttribute('href', DOWNLOADS.linux);
+    heroQuickDl.setAttribute('download', 'CineStream-1.1.0-linux-x86_64.AppImage');
   }
 
   // Switch to detected OS panel
@@ -63,14 +76,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Active Download Trigger
-  window.triggerFileDownload = function (url, filename) {
+  window.triggerFileDownload = function (url, filename, event) {
+    if (event) {
+      event.preventDefault();
+    }
     progressBox.classList.add('show');
     progressFileName.textContent = `Downloading ${filename}`;
 
-    // Create programmatic anchor to guarantee browser download dispatch
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
+    a.target = '_blank';
     document.body.appendChild(a);
     a.click();
     setTimeout(() => {
