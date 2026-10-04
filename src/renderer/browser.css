@@ -94,3 +94,138 @@ dialog{background:#171d27;border-color:#343d49}
 .shortcut-hint{font-size:11px;color:#7e8b9b;margin-left:auto}
 @media(max-width:640px){.start-inner{padding:24px 18px 42px}.dashboard-intro{margin:24px 0 21px}.welcome-panel{padding:22px}.welcome-panel h2{font-size:25px}.quick-links{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+/* Video & HTML5 Fullscreen Mode */
+.window.fullscreen-mode .chrome,
+.window.fullscreen-mode #find-bar,
+.window.fullscreen-mode #menu,
+.window.fullscreen-mode #side-panel {
+  display: none !important;
+}
+.window.fullscreen-mode .content {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 99999 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.window.fullscreen-mode .webviews {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 99999 !important;
+}
+.window.fullscreen-mode .webviews webview.active {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+/* License Pill & Dialog */
+.license-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 16px;
+  border: 1px solid #334155;
+  background: #1e293b;
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.license-btn:hover {
+  background: #334155;
+  color: #f8fafc;
+}
+.license-btn.trial {
+  border-color: #0284c7;
+  background: #0c4a6e33;
+  color: #38bdf8;
+}
+.license-btn.lifetime {
+  border-color: #16a34a;
+  background: #14532d33;
+  color: #4ade80;
+}
+.license-btn.expired {
+  border-color: #dc2626;
+  background: #7f1d1d33;
+  color: #f87171;
+  animation: pulse-border 1.5s infinite;
+}
+@keyframes pulse-border {
+  0%, 100% { border-color: #dc2626; }
+  50% { border-color: #f87171; }
+}
+
+.license-status-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: #14532d22;
+  border: 1px solid #16a34a55;
+  border-radius: 12px;
+  margin: 18px 0;
+}
+.license-badge-large {
+  font-size: 32px;
+  line-height: 1;
+}
+.license-status-box strong {
+  display: block;
+  color: #4ade80;
+  font-size: 15px;
+}
+.license-status-box small {
+  display: block;
+  color: #94a3b8;
+  margin-top: 3px;
+}
+#license-form label {
+  display: block;
+  margin: 12px 0 6px;
+  color: #cdd6e0;
+  font-size: 12px;
+  font-weight: 600;
+}
+#license-input {
+  display: block;
+  width: 100%;
+  height: 44px;
+  margin-top: 8px;
+  border: 1px solid #475569;
+  background: #0f172a;
+  border-radius: 8px;
+  color: #f8fafc;
+  padding: 0 14px;
+  font-size: 20px;
+  font-family: monospace;
+  letter-spacing: 5px;
+  text-align: center;
+  box-sizing: border-box;
+}
+#license-input:focus {
+  border-color: #22c55e;
+  outline: none;
+  box-shadow: 0 0 0 2px #22c55e33;
+}
+.license-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 18px;
+}
+.license-actions button {
+  width: 100%;
+}
+
+

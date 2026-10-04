@@ -32,7 +32,7 @@
           <button id="btn-go" class="address-action go" type="submit" title="Go">→</button>
         </form>
         <button id="btn-shield" class="pill" title="Ads and popups blocked"><span class="shield-icon">⬟</span><span id="blocked-count">0</span></button>
-        <button id="btn-account" class="avatar" title="Account" aria-label="Account">A</button>
+        <button id="btn-license" class="license-btn trial" title="CineStream License"><span id="license-icon">🔑</span> <span id="license-label">Trial: 24h</span></button>
         <button id="btn-menu" class="icon-button" title="Browser menu" aria-label="Browser menu">⋮</button>
       </div>
     </header>
@@ -65,7 +65,8 @@
               </div>
             </div>
             <div class="welcome-actions">
-              <button id="welcome-start" type="button" class="primary-button">Start Watching Free →</button>
+              <button id="welcome-start" type="button" class="primary-button">Skip &amp; Start 1-Day Free →</button>
+              <button id="welcome-code" type="button" class="secondary-button">🔑 Give me code</button>
               <button id="welcome-settings" type="button" class="secondary-button">Explore settings</button>
             </div>
           </section>
@@ -101,7 +102,36 @@
       <button id="menu-fullscreen">⛶ <span>Fullscreen</span> <span class="shortcut-hint">F11</span></button>
     </div>
     <div id="side-panel" class="side-panel" hidden><div class="panel-head"><h2 id="panel-title"></h2><button id="panel-close" class="icon-button" aria-label="Close panel">×</button></div><div id="panel-body"></div></div>
-    <dialog id="account-dialog"><div class="dialog-head"><div><span class="eyebrow">OPTIONAL ACCOUNT</span><h2>Your CineStream account</h2></div><button id="account-close" class="icon-button" aria-label="Close account">×</button></div><p id="account-description" class="muted">Browse without signing in. To move bookmarks to another computer, save a backup in Settings &amp; VPN.</p><div id="account-summary" hidden><div class="identity"><span id="account-avatar" class="avatar">A</span><div><strong id="account-name"></strong><small id="account-email"></small></div></div><p id="account-status" class="muted"></p><div class="dialog-actions"><button id="account-dashboard" class="secondary-button">Open account dashboard</button><button id="account-logout" class="secondary-button">Sign out</button></div></div><form id="account-form"><div class="form-tabs"><button id="mode-login" type="button" class="selected">Sign in</button><button id="mode-register" type="button">Create account</button></div><label id="name-label" hidden>Your name<input name="name" autocomplete="name"></label><label>Email<input name="email" type="email" autocomplete="email" required></label><label id="telegram-label" hidden>Telegram username<input name="telegram_username" placeholder="@username"></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label><label id="confirm-label" hidden>Confirm password<input name="password_confirmation" type="password" autocomplete="new-password"></label><button id="account-submit" type="submit" class="primary-button">Sign in</button></form><p id="account-error" class="error-message" role="alert"></p></dialog>
+    <dialog id="license-dialog">
+      <div class="dialog-head">
+        <div>
+          <span class="eyebrow" id="license-eyebrow">LIFETIME ACTIVATION</span>
+          <h2 id="license-title">Activate CineStream</h2>
+        </div>
+        <button id="license-close" class="icon-button" aria-label="Close">×</button>
+      </div>
+      <p id="license-desc" class="muted">Every download comes with 1 day of free, full-speed cinema browsing. Enter your 6-digit code to activate lifetime access.</p>
+      
+      <div id="license-status-box" class="license-status-box" hidden>
+        <div class="license-badge-large">👑</div>
+        <div>
+          <strong>Lifetime Access Active</strong>
+          <small id="license-active-code">Activated on this computer</small>
+        </div>
+      </div>
+
+      <form id="license-form">
+        <label id="license-input-label">
+          Enter 6-Digit Activation Code
+          <input id="license-input" type="text" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" placeholder="e.g. 100911" autocomplete="off" required>
+        </label>
+        <div class="license-actions">
+          <button id="license-submit" type="submit" class="primary-button">Activate Lifetime Access</button>
+          <button id="license-skip" type="button" class="secondary-button">Skip &amp; Continue 1-Day Trial</button>
+        </div>
+      </form>
+      <p id="license-error" class="error-message" role="alert"></p>
+    </dialog>
     <div id="toast" class="toast" role="status"></div>
   </div>
   <script src="browser.js"></script>

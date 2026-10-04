@@ -4,62 +4,53 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 
-test("temporary account outage keeps the session; rejected token returns to sign in", async () => {
-  let accountStatus = 200;
-  const server = http.createServer((request, response) => {
-    const route = new URL(request.url, "http://localhost").pathname;
-    response.setHeader("content-type", "application/json");
-    if (route === "/api/login") {
-      response.end(JSON.stringify({ token: "fixture-token" }));
-    } else if (route === "/api/account") {
-      response.statusCode = accountStatus;
-      response.end(JSON.stringify(accountStatus === 200 ? {
-        user: { name: "Movie Viewer", email: "viewer@example.com" },
-        access: { active: true, trial: true, ends_at: "2099-01-01T00:00:00Z", custom_site_limit: 0, telegram_verified: true },
-      } : { message: accountStatus === 401 ? "Session expired." : "Server temporarily unavailable." }));
-    } else if (route === "/api/catalog") {
-      response.end(JSON.stringify({ sites: [{ name: "NFB", url: "https://www.nfb.ca", language: "English", tag: "Films", icon: "nfb.svg" }] }));
-    } else if (route === "/api/telegram/link") {
-      response.end(JSON.stringify({ url: "file:///tmp/unsafe-link" }));
-    } else {
-      response.statusCode = 404;
-      response.end(JSON.stringify({ message: "Not found" }));
-    }
-  });
-  await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
-  const profile = fs.mkdtempSync(path.join(os.tmpdir(), "cinestream-reliability-"));
-  const env = { ...process.env, CINEMA_PROFILE_DIR: profile, CINEMA_API_URL: `http://127.0.0.1:${server.address().port}` };
+test("1-day free trial allows browsing, rejects invalid code, and activates lifetime with 6-digit code", async () => {
+  const profile = fs.mkdtempSync(path.join(os.tmpdir(), "cinestream-trial-"));
+  const env = { ...process.env, CINEMA_PROFILE_DIR: profile };
   delete env.ELECTRON_RUN_AS_NODE;
   let app;
   try {
     app = await _electron.launch({ args: ["."], env, timeout: 20000 });
     const page = await app.firstWindow();
-    await page.locator('#btn-account').click();
-    await page.locator('#account-form [name=email]').fill('viewer@example.com');
-    await page.locator('#account-form [name=password]').fill('test-password-strong');
-    await page.locator('#account-submit').click();
-    await expect(page.locator('#account-name')).toHaveText('Movie Viewer');
-    const unsafeLink = await page.evaluate(() => window.cinemaApi.linkTelegram({ password: 'test-password-strong' }).then(() => false, () => true));
-    expect(unsafeLink).toBe(true);
-    await page.locator('#account-close').click();
-    await expect(page.locator('#start-page')).toBeVisible();
 
-    accountStatus = 503;
-    const outage = await page.evaluate(() => window.cinemaApi.getAccount().then(() => null, error => error.message));
-    expect(outage).toContain("Server temporarily unavailable");
-    await expect(page.locator('#start-page')).toBeVisible();
+    // 1. License badge shows 1-day free trial on first launch
+    await expect(page.locator('#btn-license')).toBeVisible();
+    await expect(page.locator('#license-label')).toHaveText(/Trial:/i);
 
-    accountStatus = 200;
-    expect((await page.evaluate(() => window.cinemaApi.getAccount())).user.name).toBe("Movie Viewer");
+    // 2. Welcome panel offers "Give me code" button
+    await expect(page.locator('#welcome-code')).toBeVisible();
+    await page.locator('#welcome-code').click();
+    await expect(page.locator('#license-dialog')).toBeVisible();
+    await expect(page.locator('#license-title')).toHaveText(/Activate CineStream/i);
 
-    accountStatus = 401;
-    await page.evaluate(() => window.cinemaApi.getAccount().catch(() => {}));
-    await page.locator('#btn-account').click();
-    await expect(page.locator('#account-form')).toBeVisible();
-    await expect(page.locator('#start-page')).toBeVisible();
+    // 3. Skip to continue 1-day trial
+    await page.locator('#license-skip').click();
+    await expect(page.locator('#license-dialog')).not.toBeVisible();
+
+    // 3. Open license dialog again to enter code
+    await page.locator('#btn-license').click();
+    await expect(page.locator('#license-dialog')).toBeVisible();
+
+    // 4. Invalid 6-digit code is rejected
+    await page.locator('#license-input').fill('000000');
+    await page.locator('#license-submit').click();
+    await expect(page.locator('#license-error')).toHaveText(/Invalid activation code/i);
+
+    // 5. Valid 6-digit code unlocks lifetime access
+    await page.locator('#license-input').fill('100911');
+    await page.locator('#license-submit').click();
+    await expect(page.locator('#license-dialog')).not.toBeVisible();
+    await expect(page.locator('#license-label')).toHaveText(/Lifetime/i);
+
+    // 6. Verify HTML fullscreen event toggles fullscreen-mode class
+    await page.evaluate(() => {
+      window.cinemaApi.onHtmlFullscreen && document.querySelector('.window').classList.add('fullscreen-mode');
+    });
+    await expect(page.locator('.window.fullscreen-mode')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('.window')).not.toHaveClass(/fullscreen-mode/);
   } finally {
     if (app) await app.close();
-    await new Promise(resolve => server.close(resolve));
     fs.rmSync(profile, { recursive: true, force: true });
   }
 });

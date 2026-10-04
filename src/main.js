@@ -20,6 +20,7 @@ const { allowedPage, resolveInput } = require("./browser-url");
 const { createBackup, parseBackup, MAX_BYTES } = require("./backup");
 const rules = require("./adblock/rules");
 const config = require("./config.json");
+const activationCodes = new Set(require("./activation-codes.json"));
 if (!app.isPackaged && process.env.CINEMA_PROFILE_DIR)
   app.setPath("userData", process.env.CINEMA_PROFILE_DIR);
 app.commandLine.appendSwitch("disable-http-cache");
@@ -518,6 +519,16 @@ handle("set-proxy", async (data) => {
   await movieSession.closeAllConnections();
   return { mode: proxyMode, torPort };
 });
+handle("verify-activation-code", (rawCode) => {
+  const code = String(rawCode || "").trim();
+  if (!/^\d{6}$/.test(code)) {
+    throw new Error("Activation code must be 6 digits.");
+  }
+  if (!activationCodes.has(code)) {
+    throw new Error("Invalid activation code.");
+  }
+  return { valid: true, code };
+});
 for (const channel of [
   "window-minimize",
   "window-maximize",
@@ -643,6 +654,12 @@ function createWindow() {
     contents.on("dom-ready", () => {
       contents.insertCSS(rules.antiAdCss).catch(() => {});
       contents.executeJavaScript(userScript).catch(() => {});
+    });
+    contents.on("enter-html-full-screen", () => {
+      send("html-fullscreen", true);
+    });
+    contents.on("leave-html-full-screen", () => {
+      send("html-fullscreen", false);
     });
   });
   mainWindow.once("ready-to-show", () => {

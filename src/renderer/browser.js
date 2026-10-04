@@ -25,8 +25,83 @@
   let contextTabId = null;
   let activeId = null;
   let nextId = 1;
-  let accountMode = 'login';
-  let account = null;
+  const TRIAL_DURATION_MS = 24 * 60 * 60 * 1000;
+  function getTrialStartTime() {
+    let start = localStorage.getItem('cinestream_trial_start');
+    if (!start) {
+      start = String(Date.now());
+      localStorage.setItem('cinestream_trial_start', start);
+    }
+    return parseInt(start, 10) || Date.now();
+  }
+  function isLifetimeActive() {
+    return localStorage.getItem('cinestream_lifetime') === 'true';
+  }
+  function getRemainingTrialMs() {
+    if (isLifetimeActive()) return Infinity;
+    const start = getTrialStartTime();
+    return Math.max(0, start + TRIAL_DURATION_MS - Date.now());
+  }
+  function updateLicenseUI() {
+    const btn = $('btn-license');
+    const label = $('license-label');
+    const icon = $('license-icon');
+    if (!btn || !label) return;
+
+    if (isLifetimeActive()) {
+      btn.className = 'license-btn lifetime';
+      btn.title = 'CineStream Lifetime Access Active';
+      if (icon) icon.textContent = '👑';
+      label.textContent = 'Lifetime';
+      $('license-status-box').hidden = false;
+      $('license-form').hidden = true;
+      $('license-eyebrow').textContent = 'UNLOCKED';
+      $('license-title').textContent = 'Lifetime Access Active';
+      const code = localStorage.getItem('cinestream_code');
+      $('license-active-code').textContent = code ? `Active Code: ${code}` : 'Lifetime license valid';
+      $('license-desc').textContent = 'Your CineStream Browser is permanently unlocked. Enjoy unlimited ad-free movies & videos forever.';
+      $('license-close').hidden = false;
+      $('license-close').style.display = '';
+      return;
+    }
+
+    const remainingMs = getRemainingTrialMs();
+    const hours = Math.floor(remainingMs / (60 * 60 * 1000));
+    const minutes = Math.floor((remainingMs % (60 * 60 * 1000)) / (60 * 1000));
+
+    if (remainingMs > 0) {
+      btn.className = 'license-btn trial';
+      btn.title = `Free Trial Active (${hours}h ${minutes}m left)`;
+      if (icon) icon.textContent = '⏳';
+      label.textContent = hours > 0 ? `Trial: ${hours}h` : `Trial: ${minutes}m`;
+      $('license-status-box').hidden = true;
+      $('license-form').hidden = false;
+      $('license-skip').hidden = false;
+      $('license-skip').style.display = '';
+      $('license-close').hidden = false;
+      $('license-close').style.display = '';
+      $('license-eyebrow').textContent = '1-DAY FREE TRIAL';
+      $('license-title').textContent = 'Activate CineStream';
+      $('license-desc').textContent = `You have ${hours}h ${minutes}m remaining in your 1-day free trial. Enter a 6-digit code for lifetime access anytime.`;
+    } else {
+      btn.className = 'license-btn expired';
+      btn.title = 'Free Trial Expired - Activation Code Required';
+      if (icon) icon.textContent = '🔒';
+      label.textContent = 'Expired';
+      $('license-status-box').hidden = true;
+      $('license-form').hidden = false;
+      $('license-skip').hidden = true;
+      $('license-skip').style.display = 'none';
+      $('license-close').hidden = true;
+      $('license-close').style.display = 'none';
+      $('license-eyebrow').textContent = 'TRIAL EXPIRED';
+      $('license-title').textContent = 'Enter 6-Digit Code';
+      $('license-desc').textContent = 'Your 1-day free trial has expired. Please enter your 6-digit activation code to unlock lifetime access to CineStream Browser.';
+      if (!$('license-dialog').open) {
+        $('license-dialog').showModal();
+      }
+    }
+  }
   let toastTimer;
   function toast(message) {
     $('toast').textContent = message;
@@ -88,8 +163,16 @@
     const view = document.createElement('webview');
     view.setAttribute('src', 'about:blank');
     view.setAttribute('partition', 'cinema-private');
+    view.setAttribute('allowfullscreen', 'true');
+    view.allowfullscreen = true;
     const tab = { id, button, title, view, url: 'about:blank', ready: false, loading: false, error: null, zoomFactor: 1.0 };
     tabs.set(id, tab);
+    view.addEventListener('enter-html-full-screen', () => {
+      document.querySelector('.window')?.classList.add('fullscreen-mode');
+    });
+    view.addEventListener('leave-html-full-screen', () => {
+      document.querySelector('.window')?.classList.remove('fullscreen-mode');
+    });
     view.addEventListener('dom-ready', () => {
       tab.ready = true;
       if (activeId === id) updateToolbar();
@@ -157,6 +240,12 @@
   }
   async function navigate(value, tab = current()) {
     if (!tab || !String(value).trim()) return;
+    if (!isLifetimeActive() && getRemainingTrialMs() <= 0) {
+      updateLicenseUI();
+      if (!$('license-dialog').open) $('license-dialog').showModal();
+      toast('Free trial expired. Please enter your 6-digit activation code.');
+      return;
+    }
     try {
       await waitReady(tab);
       const result = await api.navigate({ id: tab.view.getWebContentsId(), url: value, searchEngine });
@@ -293,27 +382,6 @@
     privacy.append(clear); body.append(search, backup, network, guidance, form, privacy);
   }
   async function clearData() { try { await api.clearCache(); toast('Temporary website data cleared.'); } catch (error) { toast(error.message); } }
-  function setAccountMode(mode) {
-    accountMode = mode; const register = mode === 'register';
-    $('mode-login').classList.toggle('selected', !register); $('mode-register').classList.toggle('selected', register);
-    $('name-label').hidden = !register; $('telegram-label').hidden = !register; $('confirm-label').hidden = !register;
-    const form = $('account-form');
-    form.elements.name.required = register; form.elements.telegram_username.required = register; form.elements.password_confirmation.required = register;
-    form.elements.password.minLength = register ? 10 : 1;
-    form.elements.password.autocomplete = register ? 'new-password' : 'current-password';
-    $('account-submit').textContent = register ? 'Create account' : 'Sign in';
-  }
-  function renderAccount() {
-    $('account-summary').hidden = !account?.user;
-    $('account-form').hidden = !!account?.user;
-    $('btn-account').textContent = account?.user?.name?.trim().charAt(0).toUpperCase() || 'A';
-    if (account?.user) {
-      $('account-avatar').textContent = $('btn-account').textContent;
-      $('account-name').textContent = account.user.name;
-      $('account-email').textContent = account.user.email;
-      $('account-status').textContent = 'Browser bookmarks stay on this device. Use Settings & VPN to back them up.';
-    }
-  }
   $('new-tab').onclick = () => createTab();
   $('btn-back').onclick = () => { const tab = current(); if (tab?.ready) api.tabAction({ id: tab.view.getWebContentsId(), action: 'back' }).catch((error) => toast(error.message)); };
   $('btn-forward').onclick = () => { const tab = current(); if (tab?.ready) api.tabAction({ id: tab.view.getWebContentsId(), action: 'forward' }).catch((error) => toast(error.message)); };
@@ -337,21 +405,63 @@
   $('welcome-dismiss').onclick = dismissWelcome;
   $('welcome-start').onclick = () => { dismissWelcome(); $('home-input').focus(); };
   $('welcome-settings').onclick = () => { dismissWelcome(); showPanel('settings'); };
+  if ($('welcome-code')) {
+    $('welcome-code').onclick = () => {
+      $('license-error').textContent = '';
+      updateLicenseUI();
+      $('license-dialog').showModal();
+    };
+  }
   document.querySelectorAll('#menu [data-panel]').forEach((button) => { button.onclick = () => showPanel(button.dataset.panel); });
   $('menu-clear').onclick = () => { $('menu').hidden = true; clearData(); };
   $('menu-fullscreen').onclick = () => { $('menu').hidden = true; api.toggleFullscreen(); };
   $('panel-close').onclick = () => { $('side-panel').hidden = true; };
   $('error-retry').onclick = () => { const tab = current(); if (tab?.url) navigate(tab.url); };
   $('btn-minimize').onclick = api.minimizeWindow; $('btn-maximize').onclick = api.maximizeWindow; $('btn-close').onclick = api.closeWindow;
-  $('btn-account').onclick = async () => { $('account-error').textContent = ''; $('account-dialog').showModal(); try { account = await api.getAccount(); renderAccount(); } catch (error) { $('account-error').textContent = 'Account server unavailable. Browsing still works.'; } };
-  $('account-close').onclick = () => $('account-dialog').close();
-  $('mode-login').onclick = () => setAccountMode('login'); $('mode-register').onclick = () => setAccountMode('register');
-  $('account-form').onsubmit = async (event) => { event.preventDefault(); $('account-error').textContent = ''; const button = $('account-submit'); button.disabled = true; try { account = await api[accountMode](Object.fromEntries(new FormData(event.target))); renderAccount(); event.target.reset(); } catch (error) { $('account-error').textContent = error.message; } finally { button.disabled = false; } };
-  $('account-logout').onclick = async () => { try { await api.logout(); account = null; renderAccount(); } catch (error) { $('account-error').textContent = error.message; } };
-  $('account-dashboard').onclick = () => api.openAccount().catch((error) => { $('account-error').textContent = error.message; });
+  $('btn-license').onclick = () => {
+    $('license-error').textContent = '';
+    updateLicenseUI();
+    $('license-dialog').showModal();
+  };
+  $('license-close').onclick = () => {
+    if (isLifetimeActive() || getRemainingTrialMs() > 0) {
+      $('license-dialog').close();
+    }
+  };
+  $('license-skip').onclick = () => {
+    localStorage.setItem('cinestream_first_prompt_seen', 'true');
+    $('license-dialog').close();
+    toast('1-Day Free Trial Active. Enjoy CineStream!');
+  };
+  $('license-form').onsubmit = async (event) => {
+    event.preventDefault();
+    $('license-error').textContent = '';
+    const input = $('license-input');
+    const code = input.value.trim();
+    const submitBtn = $('license-submit');
+    submitBtn.disabled = true;
+    try {
+      const res = await api.verifyActivationCode(code);
+      if (res?.valid) {
+        localStorage.setItem('cinestream_lifetime', 'true');
+        localStorage.setItem('cinestream_code', code);
+        localStorage.setItem('cinestream_first_prompt_seen', 'true');
+        updateLicenseUI();
+        $('license-dialog').close();
+        toast('🎉 Lifetime access activated! Welcome to CineStream.');
+      }
+    } catch (error) {
+      $('license-error').textContent = error.message || 'Invalid activation code.';
+    } finally {
+      submitBtn.disabled = false;
+    }
+  };
   api.onBlockEvent((counts) => { $('blocked-count').textContent = counts.adsBlocked + counts.popupsBlocked; });
-  api.onNavigationError(toast); api.onDownloadComplete((path) => toast('Download complete: ' + path));
-  api.onLocked(() => { account = null; renderAccount(); });
+  api.onNavigationError(toast);
+  api.onDownloadComplete((path) => toast('Download complete: ' + path));
+  api.onHtmlFullscreen?.((isFullscreen) => {
+    document.querySelector('.window')?.classList.toggle('fullscreen-mode', isFullscreen);
+  });
   $('tab-strip').ondblclick = (event) => { if (event.target === $('tab-strip')) createTab(); };
   $('url-input').addEventListener('keydown', (event) => {
     if (event.key === 'Enter' && event.altKey) {
@@ -535,11 +645,20 @@
       if (url) createTab('view-source:' + url);
     }
     else if (key === 'escape') {
+      if (document.querySelector('.window')?.classList.contains('fullscreen-mode')) {
+        document.querySelector('.window').classList.remove('fullscreen-mode');
+        return;
+      }
       if (!$('find-bar').hidden) { closeFindBar(); return; }
       if (!$('tab-context-menu').hidden) { $('tab-context-menu').hidden = true; return; }
       if (!$('menu').hidden) { $('menu').hidden = true; return; }
       if (!$('side-panel').hidden) { $('side-panel').hidden = true; return; }
-      if ($('account-dialog').open) { $('account-dialog').close(); return; }
+      if ($('license-dialog').open) {
+        if (isLifetimeActive() || getRemainingTrialMs() > 0) {
+          $('license-dialog').close();
+        }
+        return;
+      }
       const tab = current();
       if (tab && tab.loading && tab.view) { tab.view.stop(); toast('Loading stopped'); }
       if (document.activeElement === $('url-input')) {
@@ -602,6 +721,14 @@
     $('url-input').placeholder = `Search ${names[searchEngine]} or enter a website address`;
     $('home-input').placeholder = `Search ${names[searchEngine]} or type a URL`;
   }
-  setAccountMode('login'); updateSearchLabels(); renderQuickLinks(); createTab();
+  getTrialStartTime();
+  updateLicenseUI();
+  updateSearchLabels();
+  renderQuickLinks();
+  createTab();
+  if (!isLifetimeActive() && getRemainingTrialMs() <= 0) {
+    $('license-dialog').showModal();
+  }
+  setInterval(updateLicenseUI, 30000);
   api.getBlockStats().then((counts) => { $('blocked-count').textContent = counts.adsBlocked + counts.popupsBlocked; }).catch(() => {});
 })();

@@ -41,6 +41,8 @@ contextBridge.exposeInMainWorld("cinemaApi", {
   onNavigationError: (callback) => listen("navigation-error", callback),
   onDownloadComplete: (callback) => listen("download-complete", callback),
   onShortcut: (callback) => listen("browser-shortcut", callback),
+  onHtmlFullscreen: (callback) => listen("html-fullscreen", callback),
+  verifyActivationCode: (code) => call("verify-activation-code", code),
   minimizeWindow: () => ipcRenderer.send("window-minimize"),
   maximizeWindow: () => ipcRenderer.send("window-maximize"),
   closeWindow: () => ipcRenderer.send("window-close"),
