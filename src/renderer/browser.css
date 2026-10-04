@@ -27,20 +27,23 @@ body{background:#0b0d12}
 .avatar{background:#18352f;border-color:#377563;color:#b4f1da}
 .start-page{background:radial-gradient(ellipse at 50% 0%,#151b25 0%,#0e1118 43%,#0b0d12 100%);scrollbar-color:#353b48 transparent}
 .start-inner{max-width:900px;padding:6vh 28px 56px;text-align:left}
-.welcome-panel{margin:0 auto 38px;padding:28px 30px;background:linear-gradient(135deg,#151b24,#11161e 70%,#151b24);border-color:#2c3744;border-radius:18px;box-shadow:0 24px 70px #0006}
-.welcome-panel::after{width:260px;height:260px;right:-110px;top:-150px;background:#23a8901a;filter:blur(34px)}
-.welcome-badge{color:#77d8c3;font-size:10px;letter-spacing:1.7px}
-.welcome-close{background:#222832;color:#aeb7c4;border:1px solid #343b48}
-.welcome-close:hover{background:#303846;color:#fff}
-.welcome-panel h2{font-size:30px;letter-spacing:-.7px;margin:18px 0 8px}
-.welcome-panel>p{color:#aeb7c4;max-width:600px}
-.welcome-features{gap:12px;margin-top:24px}
-.welcome-features>div{background:#11151c;border-color:#2a303b;border-radius:12px;padding:15px}
-.welcome-features span{color:#65d0b9}
-.welcome-features strong{color:#e7eaf0;font-size:12px}
-.welcome-features small{color:#929baa}
-.primary-button,.home-search button{background:#27b59d;color:#061713}
-.primary-button:hover,.home-search button:hover{background:#45cbb2}
+.welcome-panel{margin:0 auto 38px;padding:28px 30px;background:linear-gradient(135deg,#131720 0%,#0c0f15 70%,#131a22 100%);border:1px solid #293544;border-radius:20px;box-shadow:0 24px 70px #0009}
+.welcome-panel::after{width:260px;height:260px;right:-110px;top:-150px;background:#22c55e1a;filter:blur(40px)}
+.welcome-badge{color:#4ade80;font-size:10px;letter-spacing:1.8px;font-weight:800}
+.welcome-close{background:#1f2530;color:#94a3b8;border:1px solid #334155}
+.welcome-close:hover{background:#334155;color:#fff}
+.welcome-panel h2{font-size:30px;letter-spacing:-.7px;margin:18px 0 8px;line-height:1.2}
+.welcome-highlight{background:linear-gradient(90deg,#22c55e,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800}
+.welcome-kurdish{font-family:'Vazirmatn',Inter,sans-serif;color:#a7f3d0;font-size:14px;margin:8px 0 6px;line-height:1.6}
+.welcome-desc{color:#94a3b8;font-size:13px;line-height:1.5;margin:0 0 16px;max-width:650px}
+.feat-icon{font-size:20px;margin-bottom:6px;display:block}
+.welcome-features{gap:12px;margin-top:20px}
+.welcome-features>div{background:#0e1219;border:1px solid #202735;border-radius:14px;padding:16px;transition:border-color .2s,transform .2s}
+.welcome-features>div:hover{border-color:#38bdf844;transform:translateY(-2px)}
+.welcome-features strong{color:#f8fafc;font-size:13px}
+.welcome-features small{color:#94a3b8;line-height:1.4}
+.primary-button,.home-search button{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;border:0;font-weight:700;box-shadow:0 4px 15px #16a34a33;transition:all .15s}
+.primary-button:hover,.home-search button:hover{background:linear-gradient(135deg,#4ade80,#22c55e);transform:translateY(-1px);box-shadow:0 6px 20px #16a34a55}
 .welcome-actions{margin-top:23px}
 .welcome-actions .secondary-button{background:#1a2029;border-color:#353d49;color:#d5dae2}
 .dashboard-intro{display:flex;align-items:center;gap:17px;margin:5vh 0 27px}

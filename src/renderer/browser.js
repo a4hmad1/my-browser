@@ -2,11 +2,14 @@
   const $ = (id) => document.getElementById(id);
   const api = window.cinemaApi;
   const defaults = [
+    { title: 'Beenar (کوردی)', url: 'https://beenar.net' },
+    { title: 'KurdSubtitle', url: 'https://kurdsubtitle.net' },
+    { title: 'Kurdbin', url: 'https://kurdbin.kurdsat.tv' },
+    { title: 'KurdViewer', url: 'https://kurdviewer.com' },
+    { title: 'Tubi Cinema', url: 'https://tubitv.com' },
+    { title: 'Pluto TV', url: 'https://pluto.tv' },
+    { title: 'Plex Movies', url: 'https://watch.plex.tv/' },
     { title: 'DuckDuckGo', url: 'https://duckduckgo.com/' },
-    { title: 'YouTube', url: 'https://www.youtube.com/' },
-    { title: 'Wikipedia', url: 'https://www.wikipedia.org/' },
-    { title: 'GitHub', url: 'https://github.com/' },
-    { title: 'Reddit', url: 'https://www.reddit.com/' },
   ];
   let bookmarks = [];
   try { bookmarks = JSON.parse(localStorage.getItem('browser-bookmarks') || '[]'); if (!Array.isArray(bookmarks)) bookmarks = []; }

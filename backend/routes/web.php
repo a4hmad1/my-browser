@@ -48,10 +48,12 @@ Route::middleware('auth')->group(function () {
 Route::get('/download/{platform}', function (string $platform) {
     abort_unless(in_array($platform, ['windows', 'linux', 'deb']), 404);
     $url = config('cinema.downloads.'.$platform);
-    if (! $url && ($file = Cinema::previewDownload($platform))) {
+    if ((app()->environment('local') || ! $url) && ($file = Cinema::previewDownload($platform))) {
         return response()->download($file, null, ['Cache-Control' => 'no-store']);
     }
     abort_unless($url && filter_var($url, FILTER_VALIDATE_URL) && parse_url($url, PHP_URL_SCHEME) === 'https' && ! parse_url($url, PHP_URL_USER) && ! parse_url($url, PHP_URL_PASS), 503, 'This release has not been published yet.');
 
-    return redirect()->away($url);
+    return redirect()->away($url, 302, [
+        'Content-Disposition' => 'attachment; filename="'.basename(parse_url($url, PHP_URL_PATH)).'"',
+    ]);
 })->middleware('throttle:30,1');
