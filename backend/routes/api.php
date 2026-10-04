@@ -1,12 +1,15 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\ActivationCodeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TelegramController;
 use App\Services\Cinema;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+Route::post('/activation-codes/activate', [ActivationCodeController::class, 'activate'])->middleware('throttle:60,1');
+Route::get('/activation-codes/check/{code}', [ActivationCodeController::class, 'check'])->middleware('throttle:60,1');
 Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:register');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
 Route::post('/reset-password', [AuthController::class, 'reset'])->middleware('throttle:reset');

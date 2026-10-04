@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [AdminController::class, 'index']);
         Route::patch('/users/{user}', [AdminController::class, 'status']);
         Route::post('/users/{user}/tokens', [AdminController::class, 'issue']);
+        Route::post('/activation-codes/{id}/reactivate', [AdminController::class, 'reactivateCode'])->middleware('throttle:30,1');
     });
 });
 Route::get('/download/{platform}', function (string $platform) {

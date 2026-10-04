@@ -42,6 +42,22 @@ class AdminController extends Controller
             $daily[] = ['label' => $day->format('D'), 'count' => User::whereDate('created_at', $day->toDateString())->count()];
         }
 
+        $codeSearch = trim((string) $r->input('code_search', ''));
+        $codeStatus = $r->input('code_status', 'all');
+        $codesQuery = DB::table('activation_codes')
+            ->when($codeSearch, fn ($q) => $q->where('code', 'like', "%{$codeSearch}%"))
+            ->when($codeStatus === 'available', fn ($q) => $q->where('status', 'available'))
+            ->when($codeStatus === 'used', fn ($q) => $q->where('status', 'used'))
+            ->orderByRaw("CASE WHEN status = 'used' THEN 0 ELSE 1 END")
+            ->orderBy('id');
+
+        $activationCodes = $codesQuery->get();
+        $codeStats = [
+            'total' => DB::table('activation_codes')->count(),
+            'available' => DB::table('activation_codes')->where('status', 'available')->count(),
+            'used' => DB::table('activation_codes')->where('status', 'used')->count(),
+        ];
+
         return Inertia::render('Admin', [
             'users' => $query->latest()->paginate(15)->withQueryString()->through(fn ($u) => array_merge($u->only('id', 'name', 'email', 'telegram_username', 'is_admin', 'created_at'), ['access' => $u->access()])),
             'search' => $search, 'status' => $status, 'plans' => config('cinema.plans'),
@@ -49,7 +65,13 @@ class AdminController extends Controller
             'daily' => $daily, 'telegramAvailable' => (bool) (config('cinema.telegram_token') && config('cinema.telegram_username') && config('cinema.telegram_secret')),
             'requests' => DB::table('subscription_requests as r')->join('users as u', 'u.id', '=', 'r.user_id')->where('r.status', 'pending')->orderBy('r.created_at')->limit(50)->get(['r.*', 'u.name', 'u.email', 'u.telegram_username']),
             'deliveries' => DB::table('telegram_deliveries as d')->join('users as u', 'u.id', '=', 'd.user_id')->latest('d.created_at')->limit(30)->get(['d.id', 'd.user_id', 'd.plan', 'd.months', 'd.status', 'd.attempts', 'd.error', 'd.sent_at', 'd.created_at', 'u.name', 'u.telegram_username']),
-            'supportTickets' => DB::table('support_tickets as t')->join('users as u', 'u.id', '=', 't.user_id')->latest('t.created_at')->limit(30)->get(['t.*', 'u.name', 'u.telegram_username', 'u.telegram_verified_at']), 'events' => DB::table('admin_events as e')->join('users as u', 'u.id', '=', 'e.user_id')->latest('e.created_at')->limit(20)->get(['e.id', 'e.action', 'e.created_at', 'u.name'])]);
+            'supportTickets' => DB::table('support_tickets as t')->join('users as u', 'u.id', '=', 't.user_id')->latest('t.created_at')->limit(30)->get(['t.*', 'u.name', 'u.telegram_username', 'u.telegram_verified_at']),
+            'events' => DB::table('admin_events as e')->join('users as u', 'u.id', '=', 'e.user_id')->latest('e.created_at')->limit(20)->get(['e.id', 'e.action', 'e.created_at', 'u.name']),
+            'activationCodes' => $activationCodes,
+            'codeStats' => $codeStats,
+            'codeSearch' => $codeSearch,
+            'codeStatus' => $codeStatus,
+        ]);
     }
 
     public function status(Request $r, User $user)
@@ -161,6 +183,22 @@ class AdminController extends Controller
         $this->audit($r, $u, 'support-reply', ['ticket_id' => $ticket, 'telegram_sent' => $sent]);
 
         return back()->with('message', $sent ? 'Reply delivered in Telegram and saved in the user account.' : 'Reply saved in the user account. Telegram was unavailable; you can resend after the user verifies or unblocks the bot.');
+    }
+
+    public function reactivateCode(Request $r, int $id)
+    {
+        $code = DB::table('activation_codes')->where('id', $id)->first();
+        abort_unless($code, 404);
+        DB::table('activation_codes')->where('id', $id)->update([
+            'status' => 'available',
+            'device_id' => null,
+            'activated_at' => null,
+            'ip_address' => null,
+            'updated_at' => now(),
+        ]);
+        $this->audit($r, $r->user(), 'reactivate-code', ['code' => $code->code]);
+
+        return back()->with('message', "Code {$code->code} has been re-activated and can now be used again.");
     }
 
     private function audit(Request $r, User $u, string $action, array $details = []): void

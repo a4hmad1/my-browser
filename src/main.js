@@ -519,14 +519,38 @@ handle("set-proxy", async (data) => {
   await movieSession.closeAllConnections();
   return { mode: proxyMode, torPort };
 });
-handle("verify-activation-code", (rawCode) => {
-  const code = String(rawCode || "").trim();
+handle("verify-activation-code", async (data) => {
+  const code = typeof data === "object" ? String(data?.code || "").trim() : String(data || "").trim();
+  const deviceId = typeof data === "object" ? String(data?.deviceId || "") : "";
   if (!/^\d{6}$/.test(code)) {
     throw new Error("Activation code must be 6 digits.");
   }
   if (!activationCodes.has(code)) {
     throw new Error("Invalid activation code.");
   }
+
+  if (apiBase) {
+    try {
+      const response = await fetch(`${apiBase}/api/activation-codes/activate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({ code, device_id: deviceId || "device-" + os.hostname() }),
+        signal: AbortSignal.timeout(6000),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(result.error || result.message || "Activation failed.");
+      }
+      return { valid: true, code, message: result.message };
+    } catch (err) {
+      if (err.message && (err.message.includes("another device") || err.message.includes("Invalid activation") || err.message.includes("re-activate"))) {
+        throw err;
+      }
+      // If server is unreachable offline fallback
+      return { valid: true, code };
+    }
+  }
+
   return { valid: true, code };
 });
 for (const channel of [

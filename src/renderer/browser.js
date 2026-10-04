@@ -433,6 +433,14 @@
     $('license-dialog').close();
     toast('1-Day Free Trial Active. Enjoy CineStream!');
   };
+  function getDeviceId() {
+    let id = localStorage.getItem('cinestream_device_id');
+    if (!id) {
+      id = 'dev-' + Math.random().toString(36).substring(2, 12) + '-' + Date.now().toString(36);
+      localStorage.setItem('cinestream_device_id', id);
+    }
+    return id;
+  }
   $('license-form').onsubmit = async (event) => {
     event.preventDefault();
     $('license-error').textContent = '';
@@ -441,7 +449,7 @@
     const submitBtn = $('license-submit');
     submitBtn.disabled = true;
     try {
-      const res = await api.verifyActivationCode(code);
+      const res = await api.verifyActivationCode({ code, deviceId: getDeviceId() });
       if (res?.valid) {
         localStorage.setItem('cinestream_lifetime', 'true');
         localStorage.setItem('cinestream_code', code);
