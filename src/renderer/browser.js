@@ -570,6 +570,9 @@
   function showUpdateBanner(info) {
     const banner = $('update-banner');
     if (!banner) return;
+    if (localStorage.getItem('cinestream_dismissed_update_' + info.latestVersion) === 'true') {
+      return;
+    }
     $('update-banner-title').textContent = `Please update browser:`;
     $('update-banner-desc').textContent = `${info.title || `CineStream v${info.latestVersion} is available!`}`;
     banner.hidden = false;
@@ -577,7 +580,6 @@
 
   function handleAutoUpdateClick() {
     if (isUpdateDownloaded) {
-      // Install and restart
       api.installUpdate().catch((e) => toast('Failed to launch updater: ' + e.message));
       return;
     }
@@ -605,11 +607,18 @@
   api.onUpdateDownloaded?.((data) => {
     isUpdateDownloaded = true;
     const btn = $('btn-auto-update');
-    btn.disabled = false;
-    btn.textContent = '🔄 Restart & Apply Update';
+    btn.disabled = true;
+    btn.textContent = '🚀 Restarting CineStream...';
     const label = $('update-progress-label');
-    if (label) label.textContent = 'Update downloaded! Click to restart.';
-    toast('Update downloaded successfully! Click Restart to apply.');
+    if (label) label.textContent = 'Update downloaded! Restarting CineStream now...';
+    toast('Update downloaded! Restarting CineStream now...');
+    if (availableUpdate?.latestVersion) {
+      localStorage.setItem('cinestream_dismissed_update_' + availableUpdate.latestVersion, 'true');
+    }
+    // Automatically install and restart immediately — one click and done!
+    setTimeout(() => {
+      api.installUpdate().catch((e) => toast('Failed to launch updater: ' + e.message));
+    }, 700);
   });
 
   // UI Event Handlers
@@ -687,7 +696,12 @@
 
   // Auto-Update Banner actions
   if ($('btn-auto-update')) $('btn-auto-update').onclick = handleAutoUpdateClick;
-  if ($('btn-dismiss-update')) $('btn-dismiss-update').onclick = () => { $('update-banner').hidden = true; };
+  if ($('btn-dismiss-update')) $('btn-dismiss-update').onclick = () => {
+    $('update-banner').hidden = true;
+    if (availableUpdate?.latestVersion) {
+      localStorage.setItem('cinestream_dismissed_update_' + availableUpdate.latestVersion, 'true');
+    }
+  };
 
   // Menu and Toolbars
   $('btn-menu').onclick = () => { $('menu').hidden = !$('menu').hidden; $('side-panel').hidden = true; };

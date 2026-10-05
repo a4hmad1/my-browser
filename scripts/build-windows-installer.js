@@ -30,7 +30,7 @@ SetCompressor /SOLID lzma
 RequestExecutionLevel user
 
 !define PRODUCT_NAME "CineStream Browser"
-!define PRODUCT_VERSION "1.1.0"
+!define PRODUCT_VERSION "1.2.0"
 !define PRODUCT_PUBLISHER "CineStream Team"
 !define PRODUCT_WEB_SITE "https://github.com/a4hmad1/my-browser"
 !define PRODUCT_DIR_REGKEY "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\CineStream Browser.exe"

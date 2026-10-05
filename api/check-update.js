@@ -7,9 +7,19 @@ module.exports = async (req, res) => {
     return res.status(200).end();
   }
 
-  const currentVersion = String(req.query.current || '1.1.0').trim();
+  function isNewerVersion(latest, current) {
+    const l = String(latest || '0').split('.').map(n => parseInt(n, 10) || 0);
+    const c = String(current || '0').split('.').map(n => parseInt(n, 10) || 0);
+    for (let i = 0; i < 3; i++) {
+      if ((l[i] || 0) > (c[i] || 0)) return true;
+      if ((l[i] || 0) < (c[i] || 0)) return false;
+    }
+    return false;
+  }
+
+  const currentVersion = String(req.query.current || '1.2.0').trim();
   const latestVersion = '1.2.0';
-  const hasUpdate = latestVersion !== currentVersion;
+  const hasUpdate = isNewerVersion(latestVersion, currentVersion);
 
   return res.status(200).json({
     latestVersion,

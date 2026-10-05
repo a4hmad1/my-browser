@@ -552,6 +552,16 @@ handle("verify-activation-code", async (data) => {
 
 let downloadedUpdatePath = null;
 
+function isNewerVersion(latest, current) {
+  const l = String(latest || '0').split('.').map(n => parseInt(n, 10) || 0);
+  const c = String(current || '0').split('.').map(n => parseInt(n, 10) || 0);
+  for (let i = 0; i < 3; i++) {
+    if ((l[i] || 0) > (c[i] || 0)) return true;
+    if ((l[i] || 0) < (c[i] || 0)) return false;
+  }
+  return false;
+}
+
 handle("check-for-updates", async () => {
   const current = app.getVersion();
   try {
@@ -564,12 +574,13 @@ handle("check-for-updates", async () => {
   } catch (err) {
     console.error("Online update check fallback:", err.message);
   }
+  const latest = "1.2.0";
   return {
     currentVersion: current,
-    latestVersion: "1.2.0",
-    updateAvailable: true,
-    title: "CineStream v1.2.0 — Chrome UI & Automatic Updates",
-    notes: "Redesigned Google Chrome dark UI, Ask Google with AI Mode, direct automatic updates, improved ad blocker.",
+    latestVersion: latest,
+    updateAvailable: isNewerVersion(latest, current),
+    title: "CineStream v1.2.0 — Beautiful Dark Design & Auto Updates",
+    notes: "Redesigned cinema interface, silent permissions, and one-click automatic updater.",
     downloads: {
       windows: "https://github.com/a4hmad1/my-browser/releases/download/v1.1.0/CineStream-1.1.0-preview-win-x64-setup.exe",
       linux: "https://github.com/a4hmad1/my-browser/releases/download/v1.1.0/CineStream-1.1.0-preview-linux-x86_64.AppImage"

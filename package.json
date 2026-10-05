@@ -2,7 +2,7 @@
   "name": "cinestream-browser",
   "productName": "CineStream Browser",
   "desktopName": "cinestream.desktop",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Private desktop web browser with tabs, search, bookmarks, and ad and popup protection.",
   "homepage": "https://github.com/cinestream/movie-browser",
   "main": "src/main.js",
