@@ -41,7 +41,7 @@ fs.mkdirSync(temporaryRoot, { recursive: true });
 try {
   keys.forEach(key => delete manifest.files[key]);
   writeManifest();
-  fs.writeFileSync(file, JSON.stringify({ apiBase: 'http://127.0.0.1:4000', developmentBuild: true }, null, 2) + '\n');
+  fs.writeFileSync(file, JSON.stringify({ apiBase: 'https://coderahmad-browser.vercel.app', developmentBuild: false }, null, 2) + '\n');
   const cli = require.resolve('electron-builder/out/cli/cli.js');
   const result = spawnSync(process.execPath, [cli,
     '--' + platform, ...(platform === 'linux' ? ['AppImage', 'deb'] : ['nsis']), '--x64', '--publish', 'never',

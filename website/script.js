@@ -17,11 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const vidProgressBar = document.getElementById('vid-progress-bar');
   const vidTimeDisplay = document.getElementById('vid-time-display');
 
-  // Download Configuration (Live Cloudflare R2 links)
+  // Download Configuration (Universal Direct Downloads & GitHub Releases)
   const DOWNLOADS = window.CINESTREAM_DOWNLOADS || {
-    windows: 'https://pub-b827c10be3754a748f7f7af74ec590aa.r2.dev/CineStream-1.1.0-preview-win-x64-portable.exe',
-    linux: 'https://pub-b827c10be3754a748f7f7af74ec590aa.r2.dev/CineStream-1.1.0-preview-linux-x86_64.AppImage',
-    deb: 'https://pub-b827c10be3754a748f7f7af74ec590aa.r2.dev/CineStream-1.1.0-preview-linux-amd64.deb'
+    windows: '/api/download?platform=win',
+    linux: '/api/download?platform=linux',
+    deb: '/api/download?platform=deb'
   };
 
   // Sync panel links if defined

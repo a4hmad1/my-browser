@@ -3,83 +3,237 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; connect-src 'none'; frame-src https: http:; base-uri 'none'; form-action 'none'">
-  <title>CineStream Browser</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; object-src 'none'; connect-src 'none'; frame-src https: http:; base-uri 'none'; form-action 'none'">
+  <title>New Tab - CineStream</title>
   <link rel="stylesheet" href="browser.css">
 </head>
 <body>
   <div class="window">
+    <!-- CHROME HEADER -->
     <header class="chrome">
+      <!-- 1. TAB ROW -->
       <div class="tab-row">
-        <div class="brand" title="CineStream Browser"><span class="brand-mark">C</span></div>
+        <button id="btn-search-tabs" class="chrome-tab-search-btn" title="Search tabs" aria-label="Search tabs">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
         <div id="tab-strip" class="tab-strip" role="tablist" aria-label="Browser tabs"></div>
-        <button id="new-tab" class="icon-button new-tab" title="New tab (Ctrl+T)" aria-label="New tab">+</button>
+        <button id="new-tab" class="new-tab-btn" title="New tab (Ctrl+T)" aria-label="New tab">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
         <div class="window-actions">
           <button id="btn-minimize" class="window-button" aria-label="Minimize">−</button>
           <button id="btn-maximize" class="window-button" aria-label="Maximize">□</button>
           <button id="btn-close" class="window-button close" aria-label="Close">×</button>
         </div>
       </div>
+
+      <!-- 2. TOOLBAR -->
       <div class="toolbar">
-        <button id="btn-back" class="icon-button" title="Back (Alt+Left)" aria-label="Back" disabled>‹</button>
-        <button id="btn-forward" class="icon-button" title="Forward (Alt+Right)" aria-label="Forward" disabled>›</button>
-        <button id="btn-reload" class="icon-button" title="Reload (Ctrl+R)" aria-label="Reload">↻</button>
-        <button id="btn-home" class="icon-button" title="New tab page (Alt+Home)" aria-label="Home">⌂</button>
-        <form id="address-form" class="address-form">
-          <span id="security-icon" class="security-icon" title="New tab">⌕</span>
-          <input id="url-input" type="text" autocomplete="off" spellcheck="false" aria-label="Search or enter address" placeholder="Search or enter a website address">
-          <button id="btn-bookmark" class="address-action" type="button" title="Bookmark this page" aria-label="Bookmark page">☆</button>
-          <button id="btn-go" class="address-action go" type="submit" title="Go">→</button>
+        <div class="nav-controls">
+          <button id="btn-back" class="toolbar-btn" title="Click to go back, hold to see history" aria-label="Back" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+          <button id="btn-forward" class="toolbar-btn" title="Click to go forward, hold to see history" aria-label="Forward" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+          <button id="btn-reload" class="toolbar-btn" title="Reload this page (Ctrl+R)" aria-label="Reload">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.19"/></svg>
+          </button>
+          <button id="btn-home" class="toolbar-btn" title="Open the home page" aria-label="Home">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1v-9.5z"/></svg>
+          </button>
+        </div>
+
+        <!-- CHROME OMNIBOX -->
+        <form id="address-form" class="chrome-omnibox">
+          <div class="omnibox-left">
+            <span id="security-icon" class="omnibox-icon" title="View site information">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/></svg>
+            </span>
+            <input id="url-input" type="text" autocomplete="off" spellcheck="false" aria-label="Search Google or type a URL" placeholder="Search Google or type a URL">
+          </div>
+          <div class="omnibox-right">
+            <button id="omnibox-ai-btn" class="omnibox-ai-pill" type="button" title="Switch to AI Mode">
+              <span class="ai-sparkle">✨</span> AI Mode
+            </button>
+            <button id="btn-bookmark" class="omnibox-star-btn" type="button" title="Bookmark this tab" aria-label="Bookmark tab">☆</button>
+            <button id="btn-go" class="omnibox-go-btn" type="submit" title="Go" hidden>→</button>
+          </div>
         </form>
-        <button id="btn-shield" class="pill" title="Ads and popups blocked"><span class="shield-icon">⬟</span><span id="blocked-count">0</span></button>
-        <button id="btn-license" class="license-btn trial" title="CineStream License"><span id="license-icon">🔑</span> <span id="license-label">Trial: 24h</span></button>
-        <button id="btn-menu" class="icon-button" title="Browser menu" aria-label="Browser menu">⋮</button>
+
+        <!-- TOOLBAR RIGHT ACTIONS -->
+        <div class="toolbar-actions">
+          <button id="btn-shield" class="toolbar-pill shield-pill" title="Ads & popups blocked">
+            <span class="shield-glyph">🛡️</span>
+            <span id="blocked-count">0</span>
+          </button>
+          <button id="btn-license" class="toolbar-pill license-btn trial" title="CineStream Access">
+            <span id="license-icon">🔑</span>
+            <span id="license-label">Trial: 24h</span>
+          </button>
+          <button id="btn-downloads" class="toolbar-btn" title="Downloads" aria-label="Downloads">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+          <button id="btn-extensions" class="toolbar-btn" title="Extensions" aria-label="Extensions">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5a2.5 2.5 0 0 0-5 0V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5a2.5 2.5 0 0 0 0-5z"/></svg>
+          </button>
+          <div class="chrome-avatar" title="Google Account: Ahmad">
+            <img src="icons/avatar.png" alt="Profile" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%2364748b\'><circle cx=\'12\' cy=\'8\' r=\'4\'/><path d=\'M20 21a8 8 0 1 0-16 0\'/></svg>'">
+          </div>
+          <button id="btn-menu" class="toolbar-btn" title="Customize and control CineStream" aria-label="Browser menu">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. BOOKMARKS BAR -->
+      <div id="bookmarks-bar" class="bookmarks-bar">
+        <div id="bookmarks-items" class="bookmarks-items"></div>
+        <div class="all-bookmarks-btn" id="btn-all-bookmarks">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          <span>All Bookmarks</span>
+        </div>
+      </div>
+
+      <!-- 4. AUTO-UPDATE BANNER (Notifies user to update automatically) -->
+      <div id="update-banner" class="update-banner" hidden>
+        <div class="update-banner-content">
+          <span class="update-banner-icon">⚡</span>
+          <div class="update-banner-text">
+            <strong id="update-banner-title">Please update browser:</strong>
+            <span id="update-banner-desc">CineStream v1.2.0 is available with new features.</span>
+          </div>
+        </div>
+        <div class="update-banner-actions">
+          <button id="btn-auto-update" class="btn-update-primary" type="button">
+            ⚡ Click to Update Automatically
+          </button>
+          <button id="btn-dismiss-update" class="btn-update-dismiss" type="button" aria-label="Dismiss">✕</button>
+        </div>
+        <div id="update-progress-container" class="update-progress-container" hidden>
+          <div class="update-progress-bar-wrap">
+            <div id="update-progress-bar" class="update-progress-bar"></div>
+          </div>
+          <span id="update-progress-label">Downloading update... 0%</span>
+        </div>
       </div>
     </header>
+
+    <!-- MAIN CONTENT -->
     <main class="content">
+      <!-- GOOGLE CHROME NEW TAB PAGE -->
       <section id="start-page" class="start-page">
-        <div class="start-inner">
-          <section id="welcome-panel" class="welcome-panel" aria-label="Welcome to CineStream Browser">
-            <div class="welcome-top">
-              <span class="welcome-badge">✦ 100% FREE &bull; PRIVATE CINEMA EDITION ✦</span>
-              <button id="welcome-dismiss" class="welcome-close" type="button" aria-label="Dismiss welcome">×</button>
-            </div>
-            <h2>Cinema without ads.<br><span class="welcome-highlight">Zero popups. 100% Free.</span></h2>
-            <p class="welcome-kurdish">پەخشی خێرای فیلم و دراماکانی کوردی و هۆڵیوود بەبێ ڕیکلام و سپام</p>
-            <p class="welcome-desc">Engineered specifically for movie streaming. Automatic ad interception, instant sound cutoff, no sign-in required, and one-click connection to top cinema portals.</p>
-            <div class="welcome-features">
-              <div>
-                <span class="feat-icon">🛡️</span>
-                <strong>Zero Ads &amp; Popups</strong>
-                <small>Intrusive redirect tabs and spam banners are intercepted automatically.</small>
-              </div>
-              <div>
-                <span class="feat-icon">🎬</span>
-                <strong>Kurdish &amp; 4K Portals</strong>
-                <small>Beenar, KurdSubtitle, Kurdbin, KurdViewer &amp; HD cinema ready in one click.</small>
-              </div>
-              <div>
-                <span class="feat-icon">🔒</span>
-                <strong>100% Free &amp; Private</strong>
-                <small>No registration or sign-in needed. Your browsing stays encrypted on your device.</small>
-              </div>
-            </div>
-            <div class="welcome-actions">
-              <button id="welcome-start" type="button" class="primary-button">Skip &amp; Start 1-Day Free →</button>
-              <button id="welcome-code" type="button" class="secondary-button">🔑 Give me code</button>
-              <button id="welcome-settings" type="button" class="secondary-button">Explore settings</button>
-            </div>
-          </section>
-          <div id="dashboard-intro" class="dashboard-intro" hidden><span class="hero-symbol">C</span><div><span class="dashboard-kicker">CINESTREAM BROWSER</span><h1>Your web, your way.</h1><p>Search for anything or pick up where you left off.</p></div></div>
-          <form id="home-search" class="home-search"><span>⌕</span><input id="home-input" type="text" placeholder="Search or type a URL" aria-label="Search the web"><button type="submit">Search →</button></form>
-          <div class="section-title"><h2>Quick access</h2><button id="manage-bookmarks" type="button">Bookmarks</button></div>
-          <div id="quick-links" class="quick-links"></div>
-          <div class="privacy-note"><span>⬟</span><div><strong>Private by default</strong><small>Tabs and site data stay in memory. Bookmarks are saved on this device.</small></div></div>
+        <!-- New Tab Top Right (Gmail, Images, App Grid, Avatar) -->
+        <div class="newtab-top-bar">
+          <a href="https://mail.google.com" class="newtab-link" target="_blank">Gmail</a>
+          <a href="https://images.google.com" class="newtab-link" target="_blank">Images</a>
+          <button class="newtab-apps-btn" type="button" title="Google apps">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="5" r="2"/><circle cx="12" cy="5" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="12" cy="19" r="2"/><circle cx="19" cy="19" r="2"/></svg>
+          </button>
+          <div class="newtab-profile-avatar">
+            <img src="icons/avatar.png" alt="Ahmad Profile" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%2364748b\'><circle cx=\'12\' cy=\'8\' r=\'4\'/><path d=\'M20 21a8 8 0 1 0-16 0\'/></svg>'">
+          </div>
         </div>
+
+        <div class="newtab-center-container">
+          <!-- Big Google Logo -->
+          <div class="google-hero-logo" title="Google">
+            Google
+          </div>
+
+          <!-- Ask Google Search Bar (Pill) -->
+          <form id="home-search" class="ask-google-pill">
+            <div class="ask-google-left">
+              <span class="ask-plus-symbol">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </span>
+              <input id="home-input" type="text" placeholder="Ask Google" autocomplete="off" spellcheck="false" aria-label="Ask Google">
+            </div>
+            <div class="ask-google-right">
+              <button type="button" id="btn-voice-search" class="ask-tool-btn" title="Search by voice">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+              </button>
+              <button type="button" id="btn-lens-search" class="ask-tool-btn" title="Search by image">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              </button>
+              <button type="button" id="btn-home-ai-mode" class="ask-ai-mode-pill" title="AI Mode">
+                <span class="ai-sparkle">✨</span> AI Mode
+              </button>
+            </div>
+          </form>
+
+          <!-- Quick AI Action Cards -->
+          <div class="ai-action-cards">
+            <button type="button" class="ai-action-card" id="card-ai-mode">
+              <div class="ai-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><path d="M11 8v6M8 11h6"/></svg>
+              </div>
+              <div class="ai-card-text">
+                <strong>Do more with AI Mode</strong>
+                <small>Create, summarize, plan</small>
+              </div>
+            </button>
+            <button type="button" class="ai-action-card" id="card-ai-images">
+              <div class="ai-card-icon banana-icon">
+                🍌
+              </div>
+              <div class="ai-card-text">
+                <strong>Create images</strong>
+                <small>Reimagine, illustrate, edit</small>
+              </div>
+            </button>
+          </div>
+
+          <!-- Shortcuts & Add Shortcut Button -->
+          <div class="shortcuts-container">
+            <div id="quick-links" class="quick-links-grid"></div>
+            <button type="button" id="btn-add-shortcut" class="add-shortcut-btn" title="Add shortcut">
+              <div class="add-shortcut-circle">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </div>
+              <span>Add shortcut</span>
+            </button>
+          </div>
+
+          <!-- "Continue with these tabs" Card -->
+          <div class="continue-tabs-card">
+            <div class="continue-tabs-header">
+              <span>Continue with these tabs</span>
+              <button class="continue-dots-btn" type="button" aria-label="Tab options">⋮</button>
+            </div>
+            <div class="continue-tab-item" id="continue-tab-item">
+              <div class="continue-tab-logo">C</div>
+              <div class="continue-tab-info">
+                <strong class="continue-tab-title">CineStream Browser — Pure Black &amp; Light White Ad-Shielded Cinema</strong>
+                <span class="continue-tab-sub">coderahmad-browser.vercel.app &bull; AHMAD &bull; You visit often</span>
+              </div>
+            </div>
+            <div class="continue-tabs-footer">
+              <a href="#" id="see-more-link">See more</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating Customize Chrome Button -->
+        <button id="btn-customize-chrome" class="floating-customize-btn" type="button">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <span>Customize Chrome</span>
+        </button>
       </section>
+
+      <!-- WEBVIEWS CONTAINER FOR TABS -->
       <div id="webviews" class="webviews"></div>
-      <section id="error-page" class="error-page" hidden><div class="error-symbol">!</div><h2>Page could not load</h2><p id="error-text"></p><button id="error-retry" class="primary-button">Try again</button></section>
+
+      <!-- ERROR PAGE -->
+      <section id="error-page" class="error-page" hidden>
+        <div class="error-symbol">!</div>
+        <h2>Page could not load</h2>
+        <p id="error-text"></p>
+        <button id="error-retry" class="primary-button">Try again</button>
+      </section>
     </main>
+
+    <!-- IN-PAGE FIND BAR -->
     <div id="find-bar" class="find-bar" hidden>
       <input id="find-input" type="text" placeholder="Find in page (Ctrl+F)" autocomplete="off">
       <span id="find-count" class="find-count"></span>
@@ -87,6 +241,8 @@
       <button id="find-next" class="find-btn" title="Next (Enter)">▼</button>
       <button id="find-close" class="find-btn close" title="Close (Escape)">×</button>
     </div>
+
+    <!-- TAB CONTEXT MENU -->
     <div id="tab-context-menu" class="context-menu" hidden>
       <button data-action="new-tab">New tab <span class="shortcut-hint">Ctrl+T</span></button>
       <button data-action="reload-tab">Reload <span class="shortcut-hint">Ctrl+R</span></button>
@@ -94,14 +250,39 @@
       <button data-action="close-tab">Close tab <span class="shortcut-hint">Ctrl+W</span></button>
       <button data-action="close-other-tabs">Close other tabs</button>
     </div>
-    <div id="menu" class="menu" hidden>
-      <button data-panel="bookmarks">☆ <span>Bookmarks</span> <span class="shortcut-hint">Ctrl+B</span></button>
-      <button data-panel="history">◷ <span>History this session</span> <span class="shortcut-hint">Ctrl+H</span></button>
-      <button data-panel="settings">⚙ <span>Settings &amp; VPN</span> <span class="shortcut-hint">Ctrl+J</span></button>
-      <button id="menu-clear">⌫ <span>Clear website data</span> <span class="shortcut-hint">Ctrl+Shift+Del</span></button>
-      <button id="menu-fullscreen">⛶ <span>Fullscreen</span> <span class="shortcut-hint">F11</span></button>
+
+    <!-- CHROME 3-DOTS MENU -->
+    <div id="menu" class="chrome-menu" hidden>
+      <button id="menu-update" class="menu-update-item">
+        <span class="menu-update-badge">⚡</span>
+        <strong>Update CineStream</strong>
+        <span class="update-new-tag">New</span>
+      </button>
+      <div class="menu-divider"></div>
+      <button data-action="new-tab"><span>New tab</span> <span class="shortcut-hint">Ctrl+T</span></button>
+      <button data-action="new-window"><span>New window</span> <span class="shortcut-hint">Ctrl+N</span></button>
+      <div class="menu-divider"></div>
+      <button data-panel="bookmarks"><span>Bookmarks</span> <span class="shortcut-hint">Ctrl+B</span></button>
+      <button data-panel="history"><span>History</span> <span class="shortcut-hint">Ctrl+H</span></button>
+      <button data-panel="downloads"><span>Downloads</span> <span class="shortcut-hint">Ctrl+J</span></button>
+      <div class="menu-divider"></div>
+      <button data-panel="settings"><span>Settings</span> <span class="shortcut-hint">Ctrl+comma</span></button>
+      <button id="menu-clear"><span>Clear browsing data</span> <span class="shortcut-hint">Ctrl+Shift+Del</span></button>
+      <button id="menu-fullscreen"><span>Fullscreen</span> <span class="shortcut-hint">F11</span></button>
+      <div class="menu-divider"></div>
+      <button id="menu-exit"><span>Exit</span></button>
     </div>
-    <div id="side-panel" class="side-panel" hidden><div class="panel-head"><h2 id="panel-title"></h2><button id="panel-close" class="icon-button" aria-label="Close panel">×</button></div><div id="panel-body"></div></div>
+
+    <!-- SIDE PANEL -->
+    <div id="side-panel" class="side-panel" hidden>
+      <div class="panel-head">
+        <h2 id="panel-title">Bookmarks</h2>
+        <button id="panel-close" class="icon-button" aria-label="Close panel">×</button>
+      </div>
+      <div id="panel-body"></div>
+    </div>
+
+    <!-- LICENSE DIALOG -->
     <dialog id="license-dialog">
       <div class="dialog-head">
         <div>
@@ -132,6 +313,7 @@
       </form>
       <p id="license-error" class="error-message" role="alert"></p>
     </dialog>
+
     <div id="toast" class="toast" role="status"></div>
   </div>
   <script src="browser.js"></script>
