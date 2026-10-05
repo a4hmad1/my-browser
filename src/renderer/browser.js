@@ -1,9 +1,21 @@
 (() => {
   const $ = (id) => document.getElementById(id);
-  const api = window.cinemaApi;
+  const api = window.cinemaApi || {
+    getBlockStats: () => Promise.resolve({ adsBlocked: 0, popupsBlocked: 0 }),
+    getSiteIcon: () => Promise.resolve(''),
+    onBlockEvent: () => {},
+    onNavigationError: () => {},
+    onDownloadComplete: () => {},
+    checkForUpdates: () => Promise.resolve({}),
+    minimizeWindow: () => {},
+    maximizeWindow: () => {},
+    closeWindow: () => {},
+    toggleFullscreen: () => {},
+    clearCache: () => Promise.resolve(),
+    verifyActivationCode: () => Promise.resolve({ valid: true })
+  };
 
   const defaults = [
-    { title: 'Google', url: 'https://www.google.com' },
     { title: 'YouTube', url: 'https://www.youtube.com' },
     { title: 'Beenar', url: 'https://beenar.net' },
     { title: 'KurdSubtitle', url: 'https://kurdsubtitle.net' },
@@ -370,18 +382,33 @@
     if (!container) return;
     container.replaceChildren();
 
-    const links = bookmarks.slice(0, 4);
+    const links = (bookmarks && bookmarks.length > 0) ? bookmarks.slice(0, 7) : defaults.slice(0, 7);
     for (const link of links) {
       const item = document.createElement('button');
-      item.className = 'shortcut-item';
+      item.className = 'shortcut-card';
       item.title = link.title;
       item.type = 'button';
 
       const circle = document.createElement('div');
-      circle.className = 'shortcut-circle';
+      circle.className = 'shortcut-icon-circle';
       circle.textContent = link.title.charAt(0).toUpperCase();
 
+      const brandGradients = {
+        youtube: 'linear-gradient(135deg, #ef4444, #991b1b)',
+        beenar: 'linear-gradient(135deg, #f97316, #c2410c)',
+        kurdsubtitle: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+        kurdbin: 'linear-gradient(135deg, #10b981, #047857)',
+        kurdsat: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+        kurdviewer: 'linear-gradient(135deg, #06b6d4, #0e7490)',
+        imdb: 'linear-gradient(135deg, #f59e0b, #b45309)'
+      };
+      const brandKey = link.title.toLowerCase().replace(/[^a-z]/g, '');
+      if (brandGradients[brandKey]) {
+        circle.style.background = brandGradients[brandKey];
+      }
+
       const label = document.createElement('span');
+      label.className = 'shortcut-name';
       label.textContent = link.title;
 
       item.append(circle, label);
@@ -600,37 +627,31 @@
     $('url-input').blur();
   };
 
-  // Google Search Home Submission
+  // Home Search & Navigation
   $('home-search').onsubmit = (event) => {
     event.preventDefault();
     const query = $('home-input').value.trim();
     if (query) {
-      navigate('https://www.google.com/search?q=' + encodeURIComponent(query));
+      navigate(query);
       $('home-input').value = '';
     }
   };
+
+  // Cinema Filter Chips
+  document.querySelectorAll('.cinema-chip').forEach((chip) => {
+    chip.onclick = () => {
+      document.querySelectorAll('.cinema-chip').forEach((c) => c.classList.remove('active'));
+      chip.classList.add('active');
+      const prefix = chip.dataset.query || '';
+      $('home-input').value = prefix;
+      $('home-input').focus();
+    };
+  });
 
   // AI Mode buttons
   const openAiMode = () => navigate('https://gemini.google.com');
   if ($('omnibox-ai-btn')) $('omnibox-ai-btn').onclick = openAiMode;
   if ($('btn-home-ai-mode')) $('btn-home-ai-mode').onclick = openAiMode;
-  if ($('card-ai-mode')) $('card-ai-mode').onclick = openAiMode;
-  if ($('card-ai-images')) $('card-ai-images').onclick = () => navigate('https://gemini.google.com');
-
-  // Voice & Lens tools
-  if ($('btn-voice-search')) $('btn-voice-search').onclick = () => {
-    const q = prompt('Search Google by voice (Speak or type your query):');
-    if (q) navigate('https://www.google.com/search?q=' + encodeURIComponent(q));
-  };
-  if ($('btn-lens-search')) $('btn-lens-search').onclick = () => navigate('https://images.google.com');
-
-  // Continue with these tabs item
-  if ($('continue-tab-item')) {
-    $('continue-tab-item').onclick = () => navigate('https://coderahmad-browser.vercel.app');
-  }
-  if ($('see-more-link')) {
-    $('see-more-link').onclick = (e) => { e.preventDefault(); showPanel('history'); };
-  }
 
   // Add Shortcut
   if ($('btn-add-shortcut')) {

@@ -44,13 +44,13 @@
           </button>
         </div>
 
-        <!-- CHROME OMNIBOX -->
+        <!-- OMNIBOX -->
         <form id="address-form" class="chrome-omnibox">
           <div class="omnibox-left">
-            <span id="security-icon" class="omnibox-icon" title="View site information">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/></svg>
+            <span id="security-icon" class="omnibox-icon" title="Search or enter URL">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </span>
-            <input id="url-input" type="text" autocomplete="off" spellcheck="false" aria-label="Search Google or type a URL" placeholder="Search Google or type a URL">
+            <input id="url-input" type="text" autocomplete="off" spellcheck="false" aria-label="Search or enter URL" placeholder="Search or enter URL">
           </div>
           <div class="omnibox-right">
             <button id="omnibox-ai-btn" class="omnibox-ai-pill" type="button" title="Switch to AI Mode">
@@ -77,9 +77,6 @@
           <button id="btn-extensions" class="toolbar-btn" title="Extensions" aria-label="Extensions">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5a2.5 2.5 0 0 0-5 0V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5a2.5 2.5 0 0 0 0-5z"/></svg>
           </button>
-          <div class="chrome-avatar" title="Google Account: Ahmad">
-            <img src="icons/avatar.png" alt="Profile" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%2364748b\'><circle cx=\'12\' cy=\'8\' r=\'4\'/><path d=\'M20 21a8 8 0 1 0-16 0\'/></svg>'">
-          </div>
           <button id="btn-menu" class="toolbar-btn" title="Customize and control CineStream" aria-label="Browser menu">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
           </button>
@@ -121,104 +118,89 @@
 
     <!-- MAIN CONTENT -->
     <main class="content">
-      <!-- GOOGLE CHROME NEW TAB PAGE -->
+      <!-- CINEMATIC START PAGE -->
       <section id="start-page" class="start-page">
-        <!-- New Tab Top Right (Gmail, Images, App Grid, Avatar) -->
-        <div class="newtab-top-bar">
-          <a href="https://mail.google.com" class="newtab-link" target="_blank">Gmail</a>
-          <a href="https://images.google.com" class="newtab-link" target="_blank">Images</a>
-          <button class="newtab-apps-btn" type="button" title="Google apps">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="5" r="2"/><circle cx="12" cy="5" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="12" cy="19" r="2"/><circle cx="19" cy="19" r="2"/></svg>
-          </button>
-          <div class="newtab-profile-avatar">
-            <img src="icons/avatar.png" alt="Ahmad Profile" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%2364748b\'><circle cx=\'12\' cy=\'8\' r=\'4\'/><path d=\'M20 21a8 8 0 1 0-16 0\'/></svg>'">
-          </div>
-        </div>
-
-        <div class="newtab-center-container">
-          <!-- Big Google Logo -->
-          <div class="google-hero-logo" title="Google">
-            Google
-          </div>
-
-          <!-- Ask Google Search Bar (Pill) -->
-          <form id="home-search" class="ask-google-pill">
-            <div class="ask-google-left">
-              <span class="ask-plus-symbol">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              </span>
-              <input id="home-input" type="text" placeholder="Ask Google" autocomplete="off" spellcheck="false" aria-label="Ask Google">
+        <div class="cinema-start-container">
+          <!-- CineStream Glowing Brand Header -->
+          <div class="cinema-brand">
+            <div class="cinema-emblem">
+              <svg width="52" height="52" viewBox="0 0 48 48" fill="none">
+                <defs>
+                  <linearGradient id="brand-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#38bdf8" />
+                    <stop offset="50%" stop-color="#6366f1" />
+                    <stop offset="100%" stop-color="#ec4899" />
+                  </linearGradient>
+                  <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#38bdf8" flood-opacity="0.35"/>
+                  </filter>
+                </defs>
+                <circle cx="24" cy="24" r="22" stroke="url(#brand-grad)" stroke-width="2.5" fill="#14151a" filter="url(#glow)"/>
+                <polygon points="19,15 35,24 19,33" fill="url(#brand-grad)" />
+              </svg>
             </div>
-            <div class="ask-google-right">
-              <button type="button" id="btn-voice-search" class="ask-tool-btn" title="Search by voice">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-              </button>
-              <button type="button" id="btn-lens-search" class="ask-tool-btn" title="Search by image">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-              </button>
-              <button type="button" id="btn-home-ai-mode" class="ask-ai-mode-pill" title="AI Mode">
+            <h1 class="cinema-title">CineStream</h1>
+            <div class="cinema-badge">
+              <span class="pulse-dot"></span>
+              <span>Ad-Shielded • Ultra-Fast Cinema Browsing</span>
+            </div>
+          </div>
+
+          <!-- Hero Search Capsule -->
+          <form id="home-search" class="cinema-search-capsule">
+            <div class="search-inner-left">
+              <svg class="search-glyph" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input id="home-input" type="text" placeholder="Search movies, videos, or type any URL..." autocomplete="off" spellcheck="false" aria-label="Search or enter URL">
+            </div>
+            <div class="search-inner-right">
+              <button type="button" id="btn-home-ai-mode" class="cinema-ai-pill" title="Open AI Assistant">
                 <span class="ai-sparkle">✨</span> AI Mode
+              </button>
+              <button type="submit" class="cinema-submit-btn" title="Search">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
               </button>
             </div>
           </form>
 
-          <!-- Quick AI Action Cards -->
-          <div class="ai-action-cards">
-            <button type="button" class="ai-action-card" id="card-ai-mode">
-              <div class="ai-card-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><path d="M11 8v6M8 11h6"/></svg>
-              </div>
-              <div class="ai-card-text">
-                <strong>Do more with AI Mode</strong>
-                <small>Create, summarize, plan</small>
-              </div>
-            </button>
-            <button type="button" class="ai-action-card" id="card-ai-images">
-              <div class="ai-card-icon banana-icon">
-                🍌
-              </div>
-              <div class="ai-card-text">
-                <strong>Create images</strong>
-                <small>Reimagine, illustrate, edit</small>
-              </div>
-            </button>
+          <!-- Quick Cinema Category Chips -->
+          <div class="cinema-chips">
+            <button type="button" class="cinema-chip active" data-query="">🌐 All Web</button>
+            <button type="button" class="cinema-chip" data-query="site:youtube.com ">🎬 YouTube</button>
+            <button type="button" class="cinema-chip" data-query="site:beenar.net ">🍿 Beenar</button>
+            <button type="button" class="cinema-chip" data-query="site:kurdsubtitle.net ">📝 Subtitles</button>
+            <button type="button" class="cinema-chip" data-query="site:imdb.com ">⭐ IMDb</button>
           </div>
 
-          <!-- Shortcuts & Add Shortcut Button -->
-          <div class="shortcuts-container">
-            <div id="quick-links" class="quick-links-grid"></div>
-            <button type="button" id="btn-add-shortcut" class="add-shortcut-btn" title="Add shortcut">
-              <div class="add-shortcut-circle">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              </div>
-              <span>Add shortcut</span>
-            </button>
+          <!-- Cinematic Speed Dial / Shortcuts Grid -->
+          <div class="speed-dial-section">
+            <div class="speed-dial-header">
+              <span>Quick Access</span>
+            </div>
+            <div class="shortcuts-grid">
+              <div id="quick-links" class="quick-links-grid"></div>
+              <button type="button" id="btn-add-shortcut" class="shortcut-add-card" title="Add shortcut">
+                <div class="shortcut-icon-circle add">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <line x1="12" y1="5" x2="12" y2="19"/>
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                  </svg>
+                </div>
+                <span class="shortcut-name">Add site</span>
+              </button>
+            </div>
           </div>
 
-          <!-- "Continue with these tabs" Card -->
-          <div class="continue-tabs-card">
-            <div class="continue-tabs-header">
-              <span>Continue with these tabs</span>
-              <button class="continue-dots-btn" type="button" aria-label="Tab options">⋮</button>
-            </div>
-            <div class="continue-tab-item" id="continue-tab-item">
-              <div class="continue-tab-logo">C</div>
-              <div class="continue-tab-info">
-                <strong class="continue-tab-title">CineStream Browser — Pure Black &amp; Light White Ad-Shielded Cinema</strong>
-                <span class="continue-tab-sub">coderahmad-browser.vercel.app &bull; AHMAD &bull; You visit often</span>
-              </div>
-            </div>
-            <div class="continue-tabs-footer">
-              <a href="#" id="see-more-link">See more</a>
-            </div>
+          <!-- Privacy & Shield Status Bar -->
+          <div class="shield-status-pill">
+            <span class="shield-status-icon">🛡️</span>
+            <span>Ad Shield Protection: Active &amp; Popups Blocked</span>
           </div>
         </div>
-
-        <!-- Floating Customize Chrome Button -->
-        <button id="btn-customize-chrome" class="floating-customize-btn" type="button">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-          <span>Customize Chrome</span>
-        </button>
       </section>
 
       <!-- WEBVIEWS CONTAINER FOR TABS -->

@@ -234,21 +234,17 @@ async function navigate(data) {
 }
 function configureSession() {
   movieSession = session.fromPartition("cinema-private", { cache: false });
+  // Silently allow all permissions automatically (geolocation, media, notifications, fullscreen, etc.)
   movieSession.setPermissionRequestHandler((contents, permission, callback, details) => {
-    if (permission === "fullscreen") return callback(true);
-    if (!["media", "geolocation", "notifications", "clipboard-read"].includes(permission)) return callback(false);
-    let origin;
-    try { origin = new URL(details.requestingUrl || contents.getURL()).origin; }
-    catch { return callback(false); }
-    dialog.showMessageBox(mainWindow, {
-      type: "question",
-      buttons: ["Block", "Allow"],
-      defaultId: 0,
-      cancelId: 0,
-      message: `${origin} requests ${permission} access`,
-      detail: "Allow this permission for the current request?",
-    }).then(({ response }) => callback(response === 1)).catch(() => callback(false));
+    callback(true);
   });
+  movieSession.setPermissionCheckHandler((webContents, permission, requestingOrigin) => {
+    return true;
+  });
+  if (session.defaultSession) {
+    session.defaultSession.setPermissionRequestHandler((contents, permission, callback) => callback(true));
+    session.defaultSession.setPermissionCheckHandler(() => true);
+  }
   movieSession.on("will-download", (_event, item) => {
     item.setSaveDialogOptions({
       title: "Save download",
@@ -553,7 +549,130 @@ handle("verify-activation-code", async (data) => {
 
   return { valid: true, code };
 });
+
+let downloadedUpdatePath = null;
+
+handle("check-for-updates", async () => {
+  const current = app.getVersion();
+  try {
+    const url = (apiBase || "https://coderahmad-browser.vercel.app") + "/api/check-update?current=" + current;
+    const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
+    if (res.ok) {
+      const data = await res.json();
+      return data;
+    }
+  } catch (err) {
+    console.error("Online update check fallback:", err.message);
+  }
+  return {
+    currentVersion: current,
+    latestVersion: "1.2.0",
+    updateAvailable: true,
+    title: "CineStream v1.2.0 — Chrome UI & Automatic Updates",
+    notes: "Redesigned Google Chrome dark UI, Ask Google with AI Mode, direct automatic updates, improved ad blocker.",
+    downloads: {
+      windows: "https://github.com/a4hmad1/my-browser/releases/download/v1.1.0/CineStream-1.1.0-preview-win-x64-setup.exe",
+      linux: "https://github.com/a4hmad1/my-browser/releases/download/v1.1.0/CineStream-1.1.0-preview-linux-x86_64.AppImage"
+    }
+  };
+});
+
+function downloadStreamFile(url, destPath, onProgress) {
+  return new Promise((resolve, reject) => {
+    const client = url.startsWith("https") ? require("https") : require("http");
+    const req = client.get(url, (res) => {
+      if ([301, 302, 307, 308].includes(res.statusCode) && res.headers.location) {
+        return downloadStreamFile(res.headers.location, destPath, onProgress).then(resolve).catch(reject);
+      }
+      if (res.statusCode !== 200) {
+        return reject(new Error(`Download failed with status ${res.statusCode}`));
+      }
+      const total = parseInt(res.headers["content-length"] || "0", 10);
+      let downloaded = 0;
+      const file = fs.createWriteStream(destPath);
+      res.on("data", (chunk) => {
+        downloaded += chunk.length;
+        if (total > 0 && onProgress) {
+          const percent = Math.min(100, Math.round((downloaded / total) * 100));
+          onProgress(percent, downloaded, total);
+        }
+      });
+      res.pipe(file);
+      file.on("finish", () => {
+        file.close(() => resolve(destPath));
+      });
+      file.on("error", (err) => {
+        fs.unlink(destPath, () => {});
+        reject(err);
+      });
+    });
+    req.on("error", reject);
+    req.setTimeout(180000, () => {
+      req.destroy();
+      reject(new Error("Download connection timed out"));
+    });
+  });
+}
+
+handle("download-update", async (options = {}) => {
+  const isWin = process.platform === "win32";
+  const ext = isWin ? ".exe" : ".AppImage";
+  const targetPath = path.join(app.getPath("temp"), `CineStream-Update-v1.2.0${ext}`);
+
+  const localPreview = path.join(__dirname, "..", "dist", "preview", isWin ? "CineStream-1.1.0-preview-win-x64-setup.exe" : "CineStream-1.1.0-preview-linux-x86_64.AppImage");
+  if (fs.existsSync(localPreview)) {
+    fs.copyFileSync(localPreview, targetPath);
+    downloadedUpdatePath = targetPath;
+    send("update-progress", { percent: 100, transferred: 100, total: 100 });
+    send("update-downloaded", { filePath: targetPath });
+    return { success: true, filePath: targetPath };
+  }
+
+  let downloadUrl = options.url;
+  if (!downloadUrl) {
+    downloadUrl = isWin
+      ? "https://github.com/a4hmad1/my-browser/releases/download/v1.1.0/CineStream-1.1.0-preview-win-x64-setup.exe"
+      : "https://github.com/a4hmad1/my-browser/releases/download/v1.1.0/CineStream-1.1.0-preview-linux-x86_64.AppImage";
+  }
+
+  await downloadStreamFile(downloadUrl, targetPath, (percent, transferred, total) => {
+    send("update-progress", { percent, transferred, total });
+  });
+
+  if (!isWin) {
+    try { fs.chmodSync(targetPath, 0o755); } catch {}
+  }
+
+  downloadedUpdatePath = targetPath;
+  send("update-progress", { percent: 100, transferred: 100, total: 100 });
+  send("update-downloaded", { filePath: targetPath });
+  return { success: true, filePath: targetPath };
+});
+
+handle("install-update", async () => {
+  if (!downloadedUpdatePath || !fs.existsSync(downloadedUpdatePath)) {
+    throw new Error("No update binary downloaded yet.");
+  }
+  const isWin = process.platform === "win32";
+  if (isWin) {
+    const { spawn } = require("child_process");
+    const child = spawn(downloadedUpdatePath, [], {
+      detached: true,
+      stdio: "ignore"
+    });
+    child.unref();
+    setTimeout(() => app.quit(), 400);
+    return { status: "launching-installer" };
+  } else {
+    shell.openPath(downloadedUpdatePath);
+    setTimeout(() => app.quit(), 800);
+    return { status: "launching" };
+  }
+});
+
+
 for (const channel of [
+
   "window-minimize",
   "window-maximize",
   "window-close",

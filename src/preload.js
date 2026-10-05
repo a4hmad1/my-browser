@@ -43,8 +43,15 @@ contextBridge.exposeInMainWorld("cinemaApi", {
   onShortcut: (callback) => listen("browser-shortcut", callback),
   onHtmlFullscreen: (callback) => listen("html-fullscreen", callback),
   verifyActivationCode: (code) => call("verify-activation-code", code),
+  checkForUpdates: () => call("check-for-updates"),
+  downloadUpdate: (data) => call("download-update", data),
+  installUpdate: () => call("install-update"),
+  onUpdateAvailable: (callback) => listen("update-available", callback),
+  onUpdateProgress: (callback) => listen("update-progress", callback),
+  onUpdateDownloaded: (callback) => listen("update-downloaded", callback),
   minimizeWindow: () => ipcRenderer.send("window-minimize"),
   maximizeWindow: () => ipcRenderer.send("window-maximize"),
   closeWindow: () => ipcRenderer.send("window-close"),
   toggleFullscreen: () => ipcRenderer.send("window-fullscreen"),
 });
+
